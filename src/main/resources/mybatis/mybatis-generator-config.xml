@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration
+        PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+        "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+<generatorConfiguration>
+    <!--数据库驱动-->
+    <classPathEntry location="/Users/relly/.m2/repository/mysql/mysql-connector-java/5.1.46/mysql-connector-java-5.1.46.jar"/>
+    <context id="baseOnCommonEntity" targetRuntime="MyBatis3">
+
+        <!-- 生成的Java文件的编码 -->
+        <property name="javaFileEncoding" value="UTF-8"/>
+        <!-- 格式化java代码 -->
+        <property name="javaFormatter" value="org.mybatis.generator.api.dom.DefaultJavaFormatter"/>
+        <!-- 格式化XML代码 -->
+        <property name="xmlFormatter" value="org.mybatis.generator.api.dom.DefaultXmlFormatter"/>
+
+        <!-- 带上序列化接口 -->
+        <plugin type="org.mybatis.generator.plugins.SerializablePlugin"/>
+
+        <commentGenerator>
+            <property name="suppressDate" value="true"/>
+            <property name="addRemarkComments" value="true"/>
+        </commentGenerator>
+
+        <!--数据库连接信息-->
+        <jdbcConnection driverClass="com.mysql.jdbc.Driver"
+                        connectionURL="jdbc:mysql://127.0.0.1:3306/blog"
+                        userId="cll"
+                        password="123123">
+        </jdbcConnection>
+
+        <javaTypeResolver>
+            <property name="forceBigDecimals" value="false"/>
+        </javaTypeResolver>
+
+        <!--生成Model类存放位置-->
+        <javaModelGenerator targetPackage="com.relly.blog.entity" targetProject="src/main/java">
+            <property name="enableSubPackages" value="true"/>
+            <property name="trimStrings" value="true"/>
+            <property name="rootClass" value="com.relly.blog.entity.CommonBaseEntity"/>
+        </javaModelGenerator>
+
+        <!--生成映射文件存放位置-->
+        <sqlMapGenerator targetPackage="mapper" targetProject="src/main/resources">
+            <property name="enableSubPackages" value="true"/>
+        </sqlMapGenerator>
+
+        <!--生成Dao类存放位置-->
+        <javaClientGenerator type="XMLMAPPER" targetPackage="com.relly.blog.mapper" targetProject="src/main/java">
+            <property name="enableSubPackages" value="true"/>
+        </javaClientGenerator>
+
+        <!--生成对应表及类名-->
+        <!--<table tableName="answer" mapperName="AnswerMapper" domainObjectName="AnswerEntity"
+               enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false"
+               enableSelectByExample="false" selectByExampleQueryId="false">
+            <property name="useActualColumnNames" value="true"/>
+            <columnOverride column="isDelete" property="delete" javaType="Boolean" jdbcType="BIT"/>
+        </table>
+        <table tableName="choice" mapperName="ChoiceMapper" domainObjectName="ChoiceEntity"
+               enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false"
+               enableSelectByExample="false" selectByExampleQueryId="false">
+            <property name="useActualColumnNames" value="true"/>
+            <columnOverride column="isDelete" property="delete" javaType="Boolean" jdbcType="BIT"/>
+        </table>-->
+        <table tableName="user" mapperName="UserMapper" domainObjectName="UserEntity"
+               enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false"
+               enableSelectByExample="false" selectByExampleQueryId="false">
+            <property name="useActualColumnNames" value="true"/>
+        </table>
+       <!-- <table tableName="employee_grade" mapperName="EmployeeGradeMapper" domainObjectName="EmployeeGradeEntity"
+               enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false"
+               enableSelectByExample="false" selectByExampleQueryId="false">
+            <property name="useActualColumnNames" value="true"/>
+            <columnOverride column="isDelete" property="delete" javaType="Boolean" jdbcType="BIT"/>
+        </table>
+        <table tableName="employee_position" mapperName="EmployeePositionMapper"
+               domainObjectName="EmployeePositionEntity"
+               enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false"
+               enableSelectByExample="false" selectByExampleQueryId="false">
+            <property name="useActualColumnNames" value="true"/>
+            <columnOverride column="isDelete" property="delete" javaType="Boolean" jdbcType="BIT"/>
+        </table>
+        <table tableName="employee_role" mapperName="EmployeeRoleMapper"
+               domainObjectName="EmployeeRoleEntity"
+               enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false"
+               enableSelectByExample="false" selectByExampleQueryId="false">
+            <property name="useActualColumnNames" value="true"/>
+            <columnOverride column="isDelete" property="delete" javaType="Boolean" jdbcType="BIT"/>
+        </table>
+        <table tableName="permission" mapperName="PermissionMapper"
+               domainObjectName="PermissionEntity"
+               enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false"
+               enableSelectByExample="false" selectByExampleQueryId="false">
+            <property name="useActualColumnNames" value="true"/>
+            <columnOverride column="isDelete" property="delete" javaType="Boolean" jdbcType="BIT"/>
+        </table>
+        <table tableName="position" mapperName="PositionMapper"
+               domainObjectName="PositionEntity"
+               enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false"
+               enableSelectByExample="false" selectByExampleQueryId="false">
+            <property name="useActualColumnNames" value="true"/>
+            <columnOverride column="isDelete" property="delete" javaType="Boolean" jdbcType="BIT"/>
+        </table>
+        <table tableName="question" mapperName="QuestionMapper"
+               domainObjectName="QuestionEntity"
+               enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false"
+               enableSelectByExample="false" selectByExampleQueryId="false">
+            <property name="useActualColumnNames" value="true"/>
+            <columnOverride column="isDelete" property="delete" javaType="Boolean" jdbcType="BIT"/>
+        </table>
+        <table tableName="role" mapperName="RoleMapper"
+               domainObjectName="RoleEntity"
+               enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false"
+               enableSelectByExample="false" selectByExampleQueryId="false">
+            <property name="useActualColumnNames" value="true"/>
+            <columnOverride column="isDelete" property="delete" javaType="Boolean" jdbcType="BIT"/>
+        </table>
+        <table tableName="role_permission" mapperName="RolePermissionMapper"
+               domainObjectName="RolePermissionEntity"
+               enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false"
+               enableSelectByExample="false" selectByExampleQueryId="false">
+            <property name="useActualColumnNames" value="true"/>
+            <columnOverride column="isDelete" property="delete" javaType="Boolean" jdbcType="BIT"/>
+        </table>
+        <table tableName="survey" mapperName="SurveyMapper"
+               domainObjectName="SurveyEntity"
+               enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false"
+               enableSelectByExample="false" selectByExampleQueryId="false">
+            <property name="useActualColumnNames" value="true"/>
+            <columnOverride column="isDelete" property="delete" javaType="Boolean" jdbcType="BIT"/>
+        </table>
+        <table tableName="surveyed_emp" mapperName="SurveyedEmpMapper"
+               domainObjectName="SurveyedEmpEntity"
+               enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false"
+               enableSelectByExample="false" selectByExampleQueryId="false">
+            <property name="useActualColumnNames" value="true"/>
+            <columnOverride column="isDelete" property="delete" javaType="Boolean" jdbcType="BIT"/>
+        </table>-->
+    </context>
+</generatorConfiguration>
