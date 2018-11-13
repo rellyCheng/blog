@@ -1,6 +1,5 @@
 package com.relly.blog.common.config;
 
-import com.relly.blog.common.filter.JWTFilter;
 import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
 import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor;
@@ -69,8 +68,8 @@ public class ShiroConfig {
 	}
 
 	@Bean
-	public com.jtg.baike.backweb.config.MyShiroRealm myShiroRealm(){
-		com.jtg.baike.backweb.config.MyShiroRealm myShiroRealm = new com.jtg.baike.backweb.config.MyShiroRealm();
+	public MyShiroRealm myShiroRealm(){
+		MyShiroRealm myShiroRealm = new MyShiroRealm();
 		myShiroRealm.setCredentialsMatcher(hashedCredentialsMatcher());
 		return myShiroRealm;
 	}

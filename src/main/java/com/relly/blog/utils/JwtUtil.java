@@ -26,7 +26,8 @@ public class JwtUtil {
             Algorithm algorithm = Algorithm.HMAC256(id);
             JWTVerifier verifier = JWT.require(algorithm)
                     .withClaim("username", username)
-                    .withClaim("password", password)
+                    .withClaim("id", id)
+//                    .withClaim("password", password)
                     .build();
             DecodedJWT jwt = verifier.verify(token);
             return true;

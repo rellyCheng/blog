@@ -1,14 +1,15 @@
-package com.relly.blog.common.filter;
+package com.relly.blog.common.config;
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.interfaces.DecodedJWT;
 import com.relly.blog.common.exception.ExceptionMessage;
 import com.relly.blog.common.model.JsonResult;
+import com.relly.blog.entity.UserEntity;
+import com.relly.blog.service.UserService;
 import com.relly.blog.utils.JwtUtil;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.web.filter.authc.BasicHttpAuthenticationFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
@@ -28,6 +29,8 @@ import javax.servlet.http.HttpSession;
 public class JWTFilter extends BasicHttpAuthenticationFilter {
 
     private Logger LOGGER = LoggerFactory.getLogger(this.getClass());
+    @Autowired
+    private UserService userService;
 
     /**
      * 判断用户是否想要登入。
@@ -46,7 +49,6 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
      */
     @Override
     protected boolean executeLogin(ServletRequest request, ServletResponse response) throws Exception {
-
         Subject subject = getSubject(request,response);
 //        未登陆
         if (!subject.isAuthenticated()){
@@ -57,13 +59,14 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
         String authorization = httpServletRequest.getHeader("Authorization");
         authorization = authorization.substring(7, authorization.length());
 
-        DecodedJWT jwt = JWT.decode(authorization);
-        String username = jwt.getClaim("username").asString();
-        String id = jwt.getClaim("id").asString();
-        String password = jwt.getClaim("password").asString();
-
-        Boolean bl = JwtUtil.verify(authorization,username,id,password);
-        return bl ? true : false;
+        UserEntity user = JwtUtil.getUser(httpServletRequest);
+//        DecodedJWT jwt = JWT.decode(authorization);
+//        String username = jwt.getClaim("username").asString();
+//        String id = jwt.getClaim("id").asString();
+//        String password = jwt.getClaim("password").asString();
+        user = userService.getUserByUserName(user.getUserName());
+        Boolean bl = JwtUtil.verify(authorization,user.getUserName(),user.getId(),user.getPassword());
+        return bl;
 
     }
 
