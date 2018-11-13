@@ -3,6 +3,7 @@ package com.relly.blog.mapper;
 import com.relly.blog.common.model.PageObject;
 import com.relly.blog.dto.UserDTO;
 import com.relly.blog.entity.UserEntity;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -60,5 +61,5 @@ public interface UserMapper {
 
     int getUserListCount();
 
-    List<UserDTO> getUserList(PageObject pageObject);
+    List<UserDTO> getUserList(@Param("pageObject") PageObject pageObject);
 }

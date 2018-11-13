@@ -7,6 +7,7 @@ import com.relly.blog.service.UserService;
 import com.relly.blog.utils.JwtUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,7 +16,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import javax.validation.constraints.NotBlank;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -51,12 +54,19 @@ public class LoginController {
         Map<String,Object> map = new HashMap<>(3);
         map.put("token",jwtToken);
         map.put("name",userEntity.getName());
-        map.put("currentAuthority","admin");
+        List<String> authList = new ArrayList<>();
+        authList.add("admin");
+        authList.add("user");
+        map.put("currentAuthority",authList);
             // 判断当前用户是否登录
         if (currentUser.isAuthenticated() == true) {
             return new JsonResult(map);
         }
-        currentUser.login(token);
+        try {
+            currentUser.login(token);
+        } catch (AuthenticationException e) {
+            throw new ServiceException("用户名或密码错误!!!");
+        }
 
         return new JsonResult(map);
     }
