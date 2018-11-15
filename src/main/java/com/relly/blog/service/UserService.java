@@ -10,7 +10,7 @@ public interface UserService {
 
     UserEntity getUserByUserName(String userName);
 
-    void addUser(UserEntity userEntity,String name,String userName, String password);
+    void addUser(UserEntity currentUser,UserDTO userDTO);
 
     PageResult<UserDTO> getUserList(int pageSize, int pageCurrent);
 }

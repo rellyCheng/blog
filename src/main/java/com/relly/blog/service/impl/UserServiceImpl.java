@@ -25,20 +25,20 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void addUser(UserEntity user,String name,String userName, String password) {
-        Map<String,String> map = MD5salt.md5salt(userName,password);
+    public void addUser(UserEntity currentUser,UserDTO userDTO) {
+        Map<String,String> map = MD5salt.md5salt(userDTO.getUserName(),userDTO.getPassword());
         UserEntity userEntity = UserEntity.builder()
-                .userName(userName)
+                .userName(userDTO.getUserName())
                 .password(map.get("pwd"))
                 .salt(map.get("salt"))
                 .verify(map.get("verify"))
-                .createUser(user.getId())
+                .createUser(currentUser.getId())
                 .id(IdUtil.randomId())
                 .createTime(new Date())
-                .updateTime(new Date())
-                .updateUser(user.getId())
+                .updateUser(currentUser.getId())
+                .name(userDTO.getName())
+                .bgColor(userDTO.getBgColor())
                 .isDelete(0)
-                .name(name)
                 .build();
         userMapper.insert(userEntity);
     }
