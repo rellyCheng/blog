@@ -2,7 +2,9 @@ package com.relly.blog.service.impl;
 
 import com.relly.blog.common.model.PageResult;
 import com.relly.blog.dto.UserDTO;
+import com.relly.blog.entity.UserDetailEntity;
 import com.relly.blog.entity.UserEntity;
+import com.relly.blog.mapper.UserDetailMapper;
 import com.relly.blog.mapper.UserMapper;
 import com.relly.blog.service.UserService;
 import com.relly.blog.utils.IdUtil;
@@ -18,6 +20,8 @@ import java.util.Map;
 public class UserServiceImpl implements UserService {
     @Resource
     private UserMapper userMapper;
+    @Resource
+    private UserDetailMapper userDetailMapper;
     @Override
     public UserEntity getUserByUserName(String userName) {
         UserEntity userEntity = userMapper.getUserByUserName(userName);
@@ -53,5 +57,11 @@ public class UserServiceImpl implements UserService {
         List<UserDTO> List = userMapper.getUserList(pageResult);
         pageResult.setPageData(List);
         return pageResult;
+    }
+
+    @Override
+    public void addUserDetail(UserDetailEntity userDetailEntity) {
+        userDetailEntity.setId(IdUtil.randomId());
+        userDetailMapper.insert(userDetailEntity);
     }
 }

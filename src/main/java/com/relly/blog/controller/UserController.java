@@ -3,6 +3,7 @@ package com.relly.blog.controller;
 import com.relly.blog.common.model.JsonResult;
 import com.relly.blog.common.model.PageResult;
 import com.relly.blog.dto.UserDTO;
+import com.relly.blog.entity.UserDetailEntity;
 import com.relly.blog.entity.UserEntity;
 import com.relly.blog.mapper.UserMapper;
 import com.relly.blog.service.UserService;
@@ -16,7 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import javax.validation.constraints.NotBlank;
 import java.util.Date;
 import java.util.Map;
 
@@ -75,5 +75,11 @@ public class UserController {
     public JsonResult getUserList(int pageSize,int pageCurrent){
         PageResult<UserDTO> pageResult = userService.getUserList(pageSize,pageCurrent);
         return new JsonResult(pageResult);
+    }
+
+    @PostMapping("addUserDetail")
+    public JsonResult addUserDetail(@RequestBody UserDetailEntity userDetailEntity){
+        userService.addUserDetail(userDetailEntity);
+        return new JsonResult();
     }
 }
