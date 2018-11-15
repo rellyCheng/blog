@@ -50,11 +50,11 @@
     -->
     insert into user (id, createTime, updateTime, 
       createUser, isDelete, updateUser, 
-      name, userName, password, salt
+      name, userName, password, salt,verify
       )
     values (#{id,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
       #{createUser,jdbcType=VARCHAR}, #{isDelete,jdbcType=INTEGER}, #{updateUser,jdbcType=VARCHAR}, 
-      #{name,jdbcType=VARCHAR}, #{userName,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, #{salt,jdbcType=VARCHAR}
+      #{name,jdbcType=VARCHAR}, #{userName,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, #{salt,jdbcType=VARCHAR},#{verify,jdbcType=VARCHAR}
       )
   </insert>
   <insert id="insertSelective" parameterType="com.relly.blog.entity.UserEntity">

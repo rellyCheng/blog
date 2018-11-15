@@ -31,6 +31,7 @@ public class UserServiceImpl implements UserService {
                 .userName(userName)
                 .password(map.get("pwd"))
                 .salt(map.get("salt"))
+                .verify(map.get("verify"))
                 .createUser(user.getId())
                 .id(IdUtil.randomId())
                 .createTime(new Date())

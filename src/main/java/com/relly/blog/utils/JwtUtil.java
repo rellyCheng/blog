@@ -6,7 +6,9 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.relly.blog.entity.UserEntity;
+import com.relly.blog.service.UserService;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.io.UnsupportedEncodingException;
 import java.util.Date;
@@ -21,13 +23,13 @@ public class JwtUtil {
      * @param id 用户的id
      * @return 是否正确
      */
-    public static boolean verify(String token, String username, String id,String password) {
+    public static boolean verify(String token, String username, String id,String verify) {
         try {
             Algorithm algorithm = Algorithm.HMAC256(id);
             JWTVerifier verifier = JWT.require(algorithm)
                     .withClaim("username", username)
                     .withClaim("id", id)
-//                    .withClaim("password", password)
+                    .withClaim("verify", verify)
                     .build();
             DecodedJWT jwt = verifier.verify(token);
             return true;
@@ -69,7 +71,7 @@ public class JwtUtil {
      * @param id 用户id
      * @return 加密的token
      */
-    public static String sign(String username,String id,String password) {
+    public static String sign(String username,String id,String verify) {
         try {
             Date date = new Date(System.currentTimeMillis()+EXPIRE_TIME);
             Algorithm algorithm = Algorithm.HMAC256(id);
@@ -77,7 +79,7 @@ public class JwtUtil {
             return JWT.create()
                     .withClaim("username", username)
                     .withClaim("id", id)
-                    .withClaim("password", password)
+                    .withClaim("verify", verify)
                     .withExpiresAt(date)
                     .sign(algorithm);
         } catch (UnsupportedEncodingException e) {
@@ -102,6 +104,6 @@ public class JwtUtil {
         sysUser.setUserName(username);
         sysUser.setId(id);
         return sysUser;
-
     }
+
 }

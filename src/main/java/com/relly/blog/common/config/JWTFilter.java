@@ -10,7 +10,9 @@ import org.apache.shiro.web.filter.authc.BasicHttpAuthenticationFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
@@ -25,11 +27,11 @@ import javax.servlet.http.HttpSession;
  * @param  * @param null
  * @return
  */
-
+@Component
 public class JWTFilter extends BasicHttpAuthenticationFilter {
 
     private Logger LOGGER = LoggerFactory.getLogger(this.getClass());
-    @Autowired
+    @Resource
     private UserService userService;
 
     /**
@@ -49,23 +51,13 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
      */
     @Override
     protected boolean executeLogin(ServletRequest request, ServletResponse response) throws Exception {
-        Subject subject = getSubject(request,response);
-//        未登陆
-        if (!subject.isAuthenticated()){
-            return false;
-        }
-
         HttpServletRequest httpServletRequest = (HttpServletRequest) request;
-        String authorization = httpServletRequest.getHeader("Authorization");
-        authorization = authorization.substring(7, authorization.length());
+        String token = httpServletRequest.getHeader("Authorization");
+        token = token.substring(7, token.length());
 
         UserEntity user = JwtUtil.getUser(httpServletRequest);
-//        DecodedJWT jwt = JWT.decode(authorization);
-//        String username = jwt.getClaim("username").asString();
-//        String id = jwt.getClaim("id").asString();
-//        String password = jwt.getClaim("password").asString();
         user = userService.getUserByUserName(user.getUserName());
-        Boolean bl = JwtUtil.verify(authorization,user.getUserName(),user.getId(),user.getPassword());
+        Boolean bl = JwtUtil.verify(token,user.getUserName(),user.getId(),user.getVerify());
         return bl;
 
     }
@@ -77,9 +69,8 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
             try {
                 if (executeLogin(request, response)){
                     return true;
-                }else {
-                    response401(request, response);
                 }
+                response401(request, response);
             } catch (Exception e) {
                 response401(request, response);
             }
@@ -88,24 +79,6 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
         }
         return true;
     }
-
-//    /**
-//     * 对跨域提供支持
-//     */
-//    @Override
-//    protected boolean preHandle(ServletRequest request, ServletResponse response) throws Exception {
-//        HttpServletRequest httpServletRequest = (HttpServletRequest) request;
-//        HttpServletResponse httpServletResponse = (HttpServletResponse) response;
-//        httpServletResponse.setHeader("Access-control-Allow-Origin", httpServletRequest.getHeader("Origin"));
-//        httpServletResponse.setHeader("Access-Control-Allow-Methods", "GET,POST,OPTIONS,PUT,DELETE");
-//        httpServletResponse.setHeader("Access-Control-Allow-Headers", httpServletRequest.getHeader("Access-Control-Request-Headers"));
-//        // 跨域时会首先发送一个option请求，这里我们给option请求直接返回正常状态
-//        if (httpServletRequest.getMethod().equals(RequestMethod.OPTIONS.name())) {
-//            httpServletResponse.setStatus(HttpStatus.OK.value());
-//            return false;
-//        }
-//        return super.preHandle(request, response);
-//    }
 
     /**
      * 非法请求 跳转登录界面

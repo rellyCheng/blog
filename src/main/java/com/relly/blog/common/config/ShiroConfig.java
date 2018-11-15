@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.handler.SimpleMappingExceptionResolver;
 
+import javax.annotation.Resource;
 import javax.servlet.Filter;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -17,6 +18,8 @@ import java.util.Properties;
 
 @Configuration
 public class ShiroConfig {
+	@Resource
+	private JWTFilter jwtFilter;
 	@Bean
 	public ShiroFilterFactoryBean shirFilter(SecurityManager securityManager) {
 		System.out.println("ShiroConfiguration.shirFilter()");
@@ -26,10 +29,10 @@ public class ShiroConfig {
 		//拦截器.
 		Map<String,String> filterChainDefinitionMap = new LinkedHashMap<String,String>();
 		// 配置不会被拦截的链接 顺序判断
-		filterChainDefinitionMap.put("/api/login/accountLogin", "anon");
+		filterChainDefinitionMap.put("/publicApi/login/accountLogin", "anon");
 
 		//配置退出 过滤器,其中的具体的退出代码Shiro已经替我们实现了
-		filterChainDefinitionMap.put("/api/logout", "anon");
+		filterChainDefinitionMap.put("/publicApi/logout", "anon");
 		//<!-- 过滤链定义，从上向下顺序执行，一般将/**放在最为下边 -->:这是一个坑呢，一不小心代码就不好使了;
 		//<!-- authc:所有url都必须认证通过才可以访问; anon:所有url都都可以匿名访问-->
 		filterChainDefinitionMap.put("/**", "anon");
@@ -41,9 +44,9 @@ public class ShiroConfig {
 		//未授权界面;
 //		shiroFilterFactoryBean.setUnauthorizedUrl("/403");
 		//所有包含上面的链接都要jwt验证
-		filterChainDefinitionMap.put("/**", "jwt");
+		filterChainDefinitionMap.put("/api/**", "jwt");
 		Map<String, Filter> filterMap = new HashMap<>();
-		filterMap.put("jwt", new JWTFilter());
+		filterMap.put("jwt",jwtFilter);
 		shiroFilterFactoryBean.setFilters(filterMap);
 
 		shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainDefinitionMap);

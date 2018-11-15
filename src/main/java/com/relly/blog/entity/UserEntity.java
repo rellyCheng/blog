@@ -41,6 +41,8 @@ public class UserEntity extends CommonBaseEntity implements Serializable {
 
     private String salt;
 
+    private String verify;
+
 
     private static final long serialVersionUID = 1L;
 

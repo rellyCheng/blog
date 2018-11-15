@@ -1,4 +1,4 @@
-package com.relly.blog.controller;
+package com.relly.blog.api;
 
 import com.relly.blog.common.exception.ServiceException;
 import com.relly.blog.common.model.JsonResult;
@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/")
+@RequestMapping("/publicApi/")
 @Slf4j
 public class LoginController {
 
@@ -50,7 +50,7 @@ public class LoginController {
         // 将用户名及密码封装到UsernamePasswordToken
         UsernamePasswordToken token = new UsernamePasswordToken(userName, password);
         //生成JwtToken
-        String jwtToken = JwtUtil.sign(userName,userEntity.getId(),userEntity.getPassword());
+        String jwtToken = JwtUtil.sign(userName,userEntity.getId(),userEntity.getVerify());
         Map<String,Object> map = new HashMap<>(3);
         map.put("token",jwtToken);
         map.put("name",userEntity.getName());
