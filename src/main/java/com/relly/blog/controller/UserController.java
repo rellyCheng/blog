@@ -3,11 +3,13 @@ package com.relly.blog.controller;
 import com.relly.blog.common.model.JsonResult;
 import com.relly.blog.common.model.PageResult;
 import com.relly.blog.dto.UserDTO;
+import com.relly.blog.dto.UserDetailDTO;
 import com.relly.blog.entity.UserDetailEntity;
 import com.relly.blog.entity.UserEntity;
 import com.relly.blog.mapper.UserMapper;
 import com.relly.blog.service.UserService;
 import com.relly.blog.utils.IdUtil;
+import com.relly.blog.utils.JwtUtil;
 import com.relly.blog.utils.MD5salt;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -77,9 +79,18 @@ public class UserController {
         return new JsonResult(pageResult);
     }
 
-    @PostMapping("addUserDetail")
-    public JsonResult addUserDetail(@RequestBody UserDetailEntity userDetailEntity){
-        userService.addUserDetail(userDetailEntity);
+    /**
+     * 用户添加详细的信息
+     * @author relly
+     * @date 2018/11/16 13:20
+     * @param userDetailDTO 用户的详细信息实体
+     * @return com.relly.blog.common.model.JsonResult
+     */
+    @PostMapping("updateUserDetail")
+    public JsonResult updateUserDetail(@RequestBody @Validated UserDetailDTO userDetailDTO, HttpServletRequest request){
+        UserEntity currentUser = JwtUtil.getUser(request);
+        userDetailDTO.setUserId(currentUser.getId());
+        userService.updateUserDetail(userDetailDTO);
         return new JsonResult();
     }
 }

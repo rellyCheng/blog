@@ -2,11 +2,13 @@ package com.relly.blog.service.impl;
 
 import com.relly.blog.common.model.PageResult;
 import com.relly.blog.dto.UserDTO;
+import com.relly.blog.dto.UserDetailDTO;
 import com.relly.blog.entity.UserDetailEntity;
 import com.relly.blog.entity.UserEntity;
 import com.relly.blog.mapper.UserDetailMapper;
 import com.relly.blog.mapper.UserMapper;
 import com.relly.blog.service.UserService;
+import com.relly.blog.utils.ConvertUtils;
 import com.relly.blog.utils.IdUtil;
 import com.relly.blog.utils.MD5salt;
 import org.springframework.stereotype.Service;
@@ -60,8 +62,20 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void addUserDetail(UserDetailEntity userDetailEntity) {
-        userDetailEntity.setId(IdUtil.randomId());
-        userDetailMapper.insert(userDetailEntity);
+    public void updateUserDetail(UserDetailDTO userDetailDTO) {
+        UserDetailEntity u = new UserDetailEntity();
+        u = (UserDetailEntity) ConvertUtils.populate(userDetailDTO,u);
+        u.setProvince(userDetailDTO.getGeographic().getProvince().getLabel());
+        u.setProvinceKey(userDetailDTO.getGeographic().getProvince().getKey());
+        u.setCity(userDetailDTO.getGeographic().getCity().getLabel());
+        u.setCityKey(userDetailDTO.getGeographic().getCity().getKey());
+        int count = userDetailMapper.countUserDetailByUserId(userDetailDTO.getUserId());
+        if (count==0){
+            u.setId(IdUtil.randomId());
+            userDetailMapper.insert(u);
+        }else {
+            u.setId(userDetailMapper.getUserDetailByUserId(userDetailDTO.getUserId()).getId());
+            userDetailMapper.updateByPrimaryKeySelective(u);
+        }
     }
 }
