@@ -22,6 +22,21 @@ public class UserDetailDTO {
     private String userId;
 
     /**
+     * 背景颜色
+     */
+    private String bgColor;
+
+    /**
+     * 姓名
+     */
+    private String name;
+
+    /**
+     * 提醒的数量
+     */
+    private Integer notifyCount;
+
+    /**
      * 地址
      */
     private String address;
@@ -51,5 +66,25 @@ public class UserDetailDTO {
      */
     private String profile;
 
+    /**
+     * 省
+     */
+    private String province;
 
+    /**
+     * 市
+     */
+    private String city;
+
+    /**
+     * 省Key
+     */
+    private String provinceKey;
+
+    /**
+     * 市key
+     */
+    private String cityKey;
+
+    private String avatar;
 }

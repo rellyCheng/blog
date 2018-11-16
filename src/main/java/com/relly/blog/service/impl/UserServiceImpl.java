@@ -11,6 +11,9 @@ import com.relly.blog.service.UserService;
 import com.relly.blog.utils.ConvertUtils;
 import com.relly.blog.utils.IdUtil;
 import com.relly.blog.utils.MD5salt;
+import com.relly.blog.vo.City;
+import com.relly.blog.vo.Geographic;
+import com.relly.blog.vo.Province;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -77,5 +80,24 @@ public class UserServiceImpl implements UserService {
             u.setId(userDetailMapper.getUserDetailByUserId(userDetailDTO.getUserId()).getId());
             userDetailMapper.updateByPrimaryKeySelective(u);
         }
+    }
+
+    @Override
+    public UserDetailDTO getUserDetail(String id) {
+        UserDetailDTO userDetailDTO = userMapper.getUserDetail(id);
+        Province province = Province.builder()
+                .key(userDetailDTO.getProvinceKey())
+                .label(userDetailDTO.getProvince())
+                .build();
+        City city = City.builder()
+                .key(userDetailDTO.getCityKey())
+                .label(userDetailDTO.getCity())
+                .build();
+        Geographic geographic = Geographic.builder()
+                .city(city)
+                .province(province)
+                .build();
+        userDetailDTO.setGeographic(geographic);
+        return userDetailDTO;
     }
 }

@@ -37,34 +37,21 @@ public class UserController {
     @Resource
     private UserMapper userMapper;
 
+    /**
+     *
+     * 注册用户
+     * @author Thunder
+     * @date 2018/11/16 17:16
+     * @param [request, userDTO]
+     * @return com.relly.blog.common.model.JsonResult
+     */
     @PostMapping("registUser")
     public JsonResult registUser(HttpServletRequest request, @RequestBody @Validated UserDTO userDTO){
-//        UserEntity userEntity = JwtUtil.getUser(request);
-        UserEntity currentUser = UserEntity.builder().id("admin").build();
+        UserEntity currentUser = JwtUtil.getUser(request);
         userService.addUser(currentUser,userDTO);
         return new JsonResult();
     }
-    @PostMapping("add")
-    public JsonResult add(){
-        Map<String,String> map = MD5salt.md5salt("admin","123123");
-        UserEntity userEntity = UserEntity.builder()
-                .userName("admin")
-                .password(map.get("pwd"))
-                .salt(map.get("salt"))
-                .verify(map.get("verify"))
-                .createUser("admin")
-                .id(IdUtil.randomId())
-                .createTime(new Date())
-                .updateUser("admin")
-                .name("管理员")
-                .bgColor("#FFDEAD")
-                .isDelete(0)
-                .build();
-        userMapper.insert(userEntity);
-        return new JsonResult();
-    }
     /**
-
      *@description 获取用户列表
      *@param pageSize 每页大小
      *@param pageCurrent 第几页
@@ -92,5 +79,12 @@ public class UserController {
         userDetailDTO.setUserId(currentUser.getId());
         userService.updateUserDetail(userDetailDTO);
         return new JsonResult();
+    }
+
+    @PostMapping("currentUser")
+    public JsonResult getUserDetail(HttpServletRequest request){
+        UserEntity currentUser = JwtUtil.getUser(request);
+        UserDetailDTO userDetailDTO = userService.getUserDetail(currentUser.getId());
+        return new JsonResult(userDetailDTO);
     }
 }

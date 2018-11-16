@@ -188,6 +188,18 @@
     ORDER BY u.createTime DESC
     <include refid="limit"/>
   </select>
+  <select id="getUserDetail" resultType="com.relly.blog.dto.UserDetailDTO">
+    SELECT
+        u.`name`,
+        u.bgColor,
+        u.userName,
+        ud.*
+    FROM
+        `user` u
+    JOIN user_detail ud ON u.id = ud.userId
+    WHERE
+	u.id = #{userId}
+  </select>
   <sql id="limit">
         limit #{pageObject.startIndex}, #{pageObject.pageSize}
   </sql>
