@@ -14,9 +14,11 @@ import com.relly.blog.utils.MD5salt;
 import com.relly.blog.vo.City;
 import com.relly.blog.vo.Geographic;
 import com.relly.blog.vo.Province;
+import com.relly.blog.vo.Tags;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -98,6 +100,18 @@ public class UserServiceImpl implements UserService {
                 .province(province)
                 .build();
         userDetailDTO.setGeographic(geographic);
+        userDetailDTO.setNotifyCount(10);
+        String tags = userDetailDTO.getTags();
+
+        String[] strs = tags.split(",");
+        List<Tags> list = new ArrayList<>();
+        for (int i = 0; i < strs.length ; i++) {
+            Tags tags1 = new Tags();
+            tags1.setKey(i);
+            tags1.setLabel(strs[i]);
+            list.add(tags1);
+        }
+        userDetailDTO.setTagsList(list);
         return userDetailDTO;
     }
 }

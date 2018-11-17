@@ -34,8 +34,6 @@ public class UserController {
 
     @Resource
     private UserService userService;
-    @Resource
-    private UserMapper userMapper;
 
     /**
      *

@@ -50,11 +50,12 @@
     -->
     insert into user_detail (id, userId, address,
       avatar, country, email, province, provinceKey,
-      city,cityKey, phone, signature, title,profile
+      city,cityKey, phone, signature, title,profile,tags
       )
     values (#{id,jdbcType=CHAR}, #{userId,jdbcType=CHAR}, #{address,jdbcType=VARCHAR}, 
       #{avatar,jdbcType=VARCHAR}, #{country,jdbcType=CHAR}, #{email,jdbcType=CHAR}, #{province,jdbcType=CHAR}, #{provinceKey,jdbcType=CHAR},
-      #{city,jdbcType=CHAR},#{cityKey,jdbcType=CHAR}, #{phone,jdbcType=CHAR}, #{signature,jdbcType=VARCHAR}, #{title,jdbcType=VARCHAR}, #{profile,jdbcType=VARCHAR}
+      #{city,jdbcType=CHAR},#{cityKey,jdbcType=CHAR}, #{phone,jdbcType=CHAR}, #{signature,jdbcType=VARCHAR}, #{title,jdbcType=VARCHAR}, #{profile,jdbcType=VARCHAR},
+      #{tags,jdbcType=VARCHAR}
       )
   </insert>
   <insert id="insertSelective" parameterType="com.relly.blog.entity.UserDetailEntity">
@@ -179,6 +180,9 @@
       </if>
       <if test="title != null">
         title = #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="tags != null">
+        tags = #{tags,jdbcType=VARCHAR},
       </if>
     </set>
     where id = #{id,jdbcType=CHAR}

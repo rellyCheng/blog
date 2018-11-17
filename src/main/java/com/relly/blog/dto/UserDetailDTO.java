@@ -1,10 +1,13 @@
 package com.relly.blog.dto;
 
 import com.relly.blog.vo.Geographic;
+import com.relly.blog.vo.Tags;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 /**
  * @Author Relly
@@ -87,4 +90,13 @@ public class UserDetailDTO {
     private String cityKey;
 
     private String avatar;
+
+    private String signature;
+
+    private String title;
+
+    private String tags;
+
+    private List<Tags> tagsList;
+
 }
