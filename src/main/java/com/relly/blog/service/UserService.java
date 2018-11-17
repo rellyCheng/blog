@@ -17,4 +17,6 @@ public interface UserService {
     void updateUserDetail(UserDetailDTO userDetailDTO);
 
     UserDetailDTO getUserDetail(String id);
+
+    void updateTags(String currentUserId,String tag);
 }

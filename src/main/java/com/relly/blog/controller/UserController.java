@@ -12,10 +12,7 @@ import com.relly.blog.utils.IdUtil;
 import com.relly.blog.utils.JwtUtil;
 import com.relly.blog.utils.MD5salt;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -84,5 +81,12 @@ public class UserController {
         UserEntity currentUser = JwtUtil.getUser(request);
         UserDetailDTO userDetailDTO = userService.getUserDetail(currentUser.getId());
         return new JsonResult(userDetailDTO);
+    }
+
+    @PostMapping("updateTags")
+    public JsonResult updateTags(@RequestParam("tag") String tag,HttpServletRequest request){
+        UserEntity currentUser = JwtUtil.getUser(request);
+        userService.updateTags(currentUser.getId(),tag);
+        return new JsonResult();
     }
 }

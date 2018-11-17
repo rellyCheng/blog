@@ -114,4 +114,13 @@ public class UserServiceImpl implements UserService {
         userDetailDTO.setTagsList(list);
         return userDetailDTO;
     }
+
+    @Override
+    public void updateTags(String currentUserId,String tag) {
+        UserDetailEntity userDetailEntity = userDetailMapper.getUserDetailByUserId(currentUserId);
+        String tags = userDetailEntity.getTags();
+        tags = tags+","+tag;
+        userDetailEntity.setTags(tags);
+        userDetailMapper.updateByPrimaryKeySelective(userDetailEntity);
+    }
 }
