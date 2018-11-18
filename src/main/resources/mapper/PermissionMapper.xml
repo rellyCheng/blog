@@ -184,15 +184,15 @@
     where id = #{id,jdbcType=CHAR}
   </update>
   <select id="getCountByNameAndPermission" resultType="java.lang.Integer">
-    SELECT COUNT (*) FROM permission WHERE
+    SELECT COUNT(*) FROM permission WHERE
     <if test="permission != null">
-      permission = #{permission,jdbcType=CHAR},
+      permission = #{permission,jdbcType=CHAR}
     </if>
     <if test="name != null">
       <if test="permission != null">
         or
       </if>
-       name = #{name,jdbcType=CHAR},
+       name = #{name,jdbcType=CHAR}
     </if>
     And isDelete = 0
   </select>
@@ -204,7 +204,7 @@
     id,
     name,
     permission,
-    resourceType
+    resource_type
     from permission where isDelete = 0
     ORDER BY createTime DESC
     <include refid="limit"/>
@@ -214,14 +214,15 @@
       id,
       name,
       permission,
-      resourceType
+      resource_type
       from permission where isDelete = 0
-      and
       <if test='type == "twoMenu"'>
-       resourceType = 'oneMenu'
+        and
+        resource_type = 'oneMenu'
       </if>
       <if test='type == "threeMenu"'>
-        resourceType = 'twoMenu'
+        and
+        resource_type = 'twoMenu'
       </if>
       ORDER BY createTime DESC
   </select>

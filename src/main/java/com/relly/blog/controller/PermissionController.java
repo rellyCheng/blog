@@ -6,6 +6,7 @@ import com.relly.blog.entity.PermissionEntity;
 import com.relly.blog.entity.UserEntity;
 import com.relly.blog.service.PermissionService;
 import com.relly.blog.utils.JwtUtil;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
@@ -43,7 +45,7 @@ public class PermissionController {
         return new JsonResult(pageResult);
     }
     @PostMapping("/getParentPermissionList")
-    public JsonResult getParentPermission(String type){
+    public JsonResult getParentPermission(@Param("type") @NotBlank String type){
         List list = permissionService.pmenuList(type);
         return new JsonResult(list);
     }

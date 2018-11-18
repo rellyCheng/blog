@@ -1,7 +1,6 @@
 package com.relly.blog.mapper;
 
 import com.relly.blog.common.model.PageObject;
-import com.relly.blog.common.model.PageResult;
 import com.relly.blog.dto.PermissionDTO;
 import com.relly.blog.entity.PermissionEntity;
 import org.apache.ibatis.annotations.Param;
@@ -63,7 +62,7 @@ public interface PermissionMapper {
 
     List<PermissionEntity> getPermissionList(@Param("pageObject")PageObject pageObject);
 
-    List<PermissionEntity> pmenuList(String type);
+    List<PermissionEntity> pmenuList(@Param("type") String type);
 
     List<PermissionDTO> getAllPmenuList();
 

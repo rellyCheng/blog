@@ -12,6 +12,7 @@ import com.relly.blog.utils.IdUtil;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -31,7 +32,9 @@ public class PermissionServiceImpl implements PermissionService {
         }
         permissionEntity.setId(IdUtil.randomId());
         permissionEntity.setCreateUser(currentUserId);
-        permissionMapper.insert(permissionEntity);
+        permissionEntity.setUpdateUser(currentUserId);
+        permissionEntity.setCreateTime(new Date());
+        permissionMapper.insertSelective(permissionEntity);
     }
 
     @Override
