@@ -1,6 +1,13 @@
 package com.relly.blog.mapper;
 
+import com.relly.blog.common.model.PageObject;
+import com.relly.blog.common.model.PageResult;
+import com.relly.blog.dto.ArticleDTO;
 import com.relly.blog.entity.ArticleEntity;
+import com.relly.blog.entity.PermissionEntity;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 public interface ArticleMapper {
     /**
@@ -50,4 +57,10 @@ public interface ArticleMapper {
      * @mbg.generated
      */
     int updateByPrimaryKey(ArticleEntity record);
+
+    List<ArticleDTO> getArticleListByUser(@Param("userId") String userId);
+
+    int gettMyArticleListCount(@Param("userId") String userId);
+
+    List<ArticleDTO> getMyArticleListMore(@Param("userId") String userId, @Param("pageObject")PageObject pageObject);
 }
