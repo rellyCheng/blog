@@ -24,6 +24,15 @@ public class UploadController {
     private static final Logger LOGGER = LoggerFactory.getLogger(UploadController.class);
 
 
+    /**
+     *
+     * 单个文件上传
+     * @author Relly
+     * @date 2018/11/20 13:55
+     * @param file
+     * @param request
+     * @return com.relly.blog.common.model.JsonResult
+     */
     @PostMapping("/singleUpload")
     public JsonResult upload(@RequestParam("file") MultipartFile file, HttpServletRequest request) {
         if (file.isEmpty()) {
@@ -49,6 +58,14 @@ public class UploadController {
         return new JsonResult(fileMap);
     }
 
+    /**
+     *
+     * 多个文件上传
+     * @author Relly
+     * @date 2018/11/20 13:56
+     * @param request
+     * @return com.relly.blog.common.model.JsonResult
+     */
     @PostMapping("/multiUpload")
     @ResponseBody
     public JsonResult multiUpload(HttpServletRequest request) {
