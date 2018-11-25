@@ -50,7 +50,7 @@ public class LoginController {
         // 将用户名及密码封装到UsernamePasswordToken
         UsernamePasswordToken token = new UsernamePasswordToken(userName, password);
         //生成JwtToken
-        String jwtToken = JwtUtil.sign(userName,userEntity.getId(),userEntity.getVerify());
+        String jwtToken = JwtUtil.sign(userName,userEntity.getId(),userEntity.getVerify(),userEntity.getName());
         Map<String,Object> map = new HashMap<>(3);
         map.put("token",jwtToken);
         map.put("name",userEntity.getName());

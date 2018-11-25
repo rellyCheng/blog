@@ -2,12 +2,16 @@ package com.relly.blog.service.impl;
 
 import com.relly.blog.common.model.PageResult;
 import com.relly.blog.dto.ArticleDTO;
+import com.relly.blog.entity.ArticleEntity;
+import com.relly.blog.entity.UserEntity;
 import com.relly.blog.mapper.ArticleMapper;
 import com.relly.blog.service.ArticleService;
+import com.relly.blog.utils.IdUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -31,5 +35,31 @@ public class ArticleServiceImpl implements ArticleService {
         List<ArticleDTO> list = articleMapper.getMyArticleListMore(userId,pageResult);
         pageResult.setPageData(list);
         return pageResult;
+    }
+
+    @Override
+    public void save(UserEntity currentUser, ArticleDTO articleDTO) {
+        ArticleEntity articleEntity = ArticleEntity.builder()
+                .content(articleDTO.getContent())
+                .title(articleDTO.getTitle())
+                .cover(articleDTO.getCover())
+                .createTime(new Date())
+                .type(articleDTO.getType())
+                .isPublic(articleDTO.getIsPublic()?0:1)
+                .description(articleDTO.getDescription())
+                .href("练手")
+                .id(IdUtil.randomId())
+                .owner(currentUser.getName())
+                .createUser(currentUser.getId())
+                .updateUser(currentUser.getId())
+                .build();
+        articleMapper.insertSelective(articleEntity);
+
+    }
+
+    @Override
+    public ArticleDTO getArticleDetail(String articleId) {
+        ArticleDTO articleDTO = articleMapper.getArticleDetail(articleId);
+        return articleDTO;
     }
 }

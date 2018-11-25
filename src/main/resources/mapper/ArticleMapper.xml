@@ -113,6 +113,9 @@
       <if test="isDelete != null">
         isDelete,
       </if>
+      <if test="isPublic != null">
+        isPublic,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -156,6 +159,9 @@
       </if>
       <if test="isDelete != null">
         #{isDelete,jdbcType=BIT},
+      </if>
+      <if test="isPublic != null">
+        #{isPublic,jdbcType=INTEGER},
       </if>
     </trim>
   </insert>
@@ -270,6 +276,12 @@
     from article where isDelete = 0
     ORDER BY createTime DESC
     <include refid="limit"/>
+  </select>
+  <select id="getArticleDetail" resultType="com.relly.blog.dto.ArticleDTO">
+    select
+    *,
+    id as articleId
+    from article where id = #{articleId}
   </select>
   <sql id="limit">
         limit #{pageObject.startIndex}, #{pageObject.pageSize}

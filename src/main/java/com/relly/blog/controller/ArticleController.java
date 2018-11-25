@@ -9,11 +9,13 @@ import com.relly.blog.utils.JwtUtil;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.constraints.NotBlank;
 import java.util.List;
 
 @RestController
@@ -37,10 +39,40 @@ public class ArticleController {
         return new JsonResult(list);
     }
 
+    /**
+     * 加载更多文章
+     * @param request
+     * @param pageCurrent
+     * @return
+     */
     @RequestMapping("getMyArticleListMore")
     public JsonResult getMyArticleListMore(HttpServletRequest request, @Param("pageCurrent") int pageCurrent){
         UserEntity userEntity = JwtUtil.getUser(request);
         PageResult pageResult = articleService.getMyArticleListMore(userEntity.getId(),pageCurrent);
         return new JsonResult(pageResult);
+    }
+
+    /**
+     * 新建文章
+     * @param request
+     * @param articleDTO
+     * @return
+     */
+    @RequestMapping("save")
+    public JsonResult save(HttpServletRequest request, @RequestBody ArticleDTO articleDTO){
+        UserEntity userEntity = JwtUtil.getUser(request);
+        articleService.save(userEntity,articleDTO);
+        return new JsonResult();
+    }
+
+    /**
+     * 获取文章详情
+     * @param articleId
+     * @return
+     */
+    @RequestMapping("getArticleDetail")
+    public JsonResult getArticleDetail( @NotBlank String articleId){
+        ArticleDTO articleDTO = articleService.getArticleDetail(articleId);
+        return new JsonResult(articleDTO);
     }
 }
