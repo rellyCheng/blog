@@ -206,7 +206,7 @@
       FROM role
       WHERE role = #{role,jdbcType=VARCHAR}
   </select>
-  <select id="getPermissionByRole" resultType="java.util.List">
+  <select id="getPermissionByRole" resultType="java.lang.String">
       SELECT a.id AS 'key'
         FROM
             permission a

@@ -277,6 +277,12 @@
       WHERE
 	  emp.id = #{userId} and p.resourceType = 'pmenu' and p.isDelete = 0
   </select>
+    <select id="getAllPermissionList" resultType="com.relly.blog.dto.AllPermissionDTO">
+    select
+    *,
+    id AS 'key'
+    from permission where  isDelete = 0
+    </select>
   <sql id="limit">
         limit #{pageObject.startIndex}, #{pageObject.pageSize}
   </sql>

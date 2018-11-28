@@ -1,6 +1,7 @@
 package com.relly.blog.service;
 
 import com.relly.blog.common.model.PageResult;
+import com.relly.blog.dto.AllPermissionDTO;
 import com.relly.blog.entity.RoleEntity;
 import com.relly.blog.entity.UserEntity;
 
@@ -21,7 +22,7 @@ public interface RoleService {
 
     void delPermissionForRole(List<String> deletePermissions, String roleId);
 
-    List getPermissionByRole(String roleId);
+    List<String> getPermissionByRole(String roleId);
 
-    List getAllPermissionList();
+    List<AllPermissionDTO> getAllPermissionList();
 }

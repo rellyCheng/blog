@@ -69,7 +69,7 @@ public interface RoleMapper {
 
     void delBatch(@Param("uids") List<String> uids, @Param("roleId") String roleId);
 
-    List getPermissionByRole(@Param("roleId") String roleId);
+    List<String> getPermissionByRole(@Param("roleId") String roleId);
 
     void insertBatchPermission(@Param("targetPermissions") List<String> targetPermissions, @Param("roleId") String roleId);
 

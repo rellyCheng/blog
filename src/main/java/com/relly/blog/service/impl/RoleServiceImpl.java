@@ -2,6 +2,7 @@ package com.relly.blog.service.impl;
 
 import com.relly.blog.common.exception.ServiceException;
 import com.relly.blog.common.model.PageResult;
+import com.relly.blog.dto.AllPermissionDTO;
 import com.relly.blog.dto.RoleDto;
 import com.relly.blog.entity.RoleEntity;
 import com.relly.blog.entity.UserEntity;
@@ -78,14 +79,14 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public List getPermissionByRole(String roleId) {
-        List list =  roleMapper.getPermissionByRole(roleId);
+    public List<String> getPermissionByRole(String roleId) {
+        List<String> list =  roleMapper.getPermissionByRole(roleId);
         return list;
     }
 
     @Override
-    public List getAllPermissionList() {
-        List list = permissionMapper.getAllPermissionList();
+    public List<AllPermissionDTO> getAllPermissionList() {
+        List<AllPermissionDTO> list = permissionMapper.getAllPermissionList();
         return list;
     }
 }
