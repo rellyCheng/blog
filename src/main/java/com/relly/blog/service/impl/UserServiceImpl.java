@@ -123,4 +123,17 @@ public class UserServiceImpl implements UserService {
         userDetailEntity.setTags(tags);
         userDetailMapper.updateByPrimaryKeySelective(userDetailEntity);
     }
+
+    @Override
+    public List getUserListByRole(String roleId) {
+        List<String> list = userMapper.getUserListByRole(roleId);
+        return list;
+    }
+
+    @Override
+    public List getAllUserList() {
+        List<String> list = userMapper.getAllUserList();
+        return null;
+    }
+
 }

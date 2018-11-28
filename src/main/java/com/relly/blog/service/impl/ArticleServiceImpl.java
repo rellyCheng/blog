@@ -47,7 +47,7 @@ public class ArticleServiceImpl implements ArticleService {
                 .type(articleDTO.getType())
                 .isPublic(articleDTO.getIsPublic()?0:1)
                 .description(articleDTO.getDescription())
-                .href("练手")
+                .href("总之")
                 .id(IdUtil.randomId())
                 .owner(currentUser.getName())
                 .createUser(currentUser.getId())

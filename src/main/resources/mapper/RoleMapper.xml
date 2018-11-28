@@ -32,6 +32,13 @@
     from role
     where id = #{id,jdbcType=CHAR}
   </select>
+    <select id="getRoleListCount" resultType="java.lang.Integer">
+        SELECT count(*)
+        FROM
+            role r
+        WHERE r.isDelete = 0
+    </select>
+
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
     <!--
       WARNING - @mbg.generated
@@ -39,6 +46,22 @@
     -->
     delete from role
     where id = #{id,jdbcType=CHAR}
+  </delete>
+  <delete id="delBatch">
+    delete from user_role
+    where
+    role_id=#{roleId} and uid in
+    <foreach collection="uids" item="item" open="(" close=")" separator=",">
+      (#{item})
+    </foreach>
+  </delete>
+  <delete id="delBatchPermission">
+    delete from role_permission
+    where
+    role_id=#{roleId} and permission_id in
+    <foreach collection="targetPermissions" item="item" open="(" close=")" separator=",">
+      (#{item})
+    </foreach>
   </delete>
   <insert id="insert" parameterType="com.relly.blog.entity.RoleEntity">
     <!--
@@ -111,6 +134,7 @@
       </if>
     </trim>
   </insert>
+
   <update id="updateByPrimaryKeySelective" parameterType="com.relly.blog.entity.RoleEntity">
     <!--
       WARNING - @mbg.generated
@@ -157,4 +181,61 @@
       isDelete = #{isDelete,jdbcType=BIT}
     where id = #{id,jdbcType=CHAR}
   </update>
+
+  <select id="getRoleList" resultType="com.relly.blog.dto.RoleDto">
+    SELECT
+    r.id,
+    r.createTime,
+    r.role,
+    r.description
+    FROM role r
+    WHERE r.isDelete = 0
+    ORDER BY r.createTime DESC
+    <include refid="limit"/>
+  </select>
+  <select id="getRoleListByUserId" resultType="com.relly.blog.entity.RoleEntity">
+      SELECT
+            b.id,
+            b.name
+        FROM `user_role` a
+            JOIN role b ON a.role_id = b.id
+        WHERE a.uid = #{userId};
+  </select>
+  <select id="getCountByName" resultType="java.lang.Integer">
+      SELECT count(*)
+      FROM role
+      WHERE role = #{role,jdbcType=VARCHAR}
+  </select>
+  <select id="getPermissionByRole" resultType="java.util.List">
+      SELECT a.id AS 'key'
+        FROM
+            permission a
+        WHERE
+            a.id IN (
+                SELECT b.permission_id
+                FROM
+                    role_permission b
+                WHERE
+                    role_id = #{roleId}
+            )
+            AND isDelete = 0
+  </select>
+  <insert id="insertBatch">
+    insert into user_role (role_id, uid)
+    VALUES
+    <foreach collection="uids" item="item" separator=",">
+      (#{roleId},#{item})
+    </foreach>
+  </insert>
+  <insert id="insertBatchPermission">
+    insert into role_permission (permission_id, role_id)
+    VALUES
+    <foreach collection="targetPermissions" item="item" separator=",">
+      (#{item},#{roleId})
+    </foreach>
+
+  </insert>
+  <sql id="limit">
+        limit #{pageObject.startIndex}, #{pageObject.pageSize}
+  </sql>
 </mapper>

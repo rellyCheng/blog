@@ -65,4 +65,8 @@ public interface UserMapper {
     List<UserDTO> getUserList(@Param("pageObject") PageObject pageObject);
 
     UserDetailDTO getUserDetail(String userId);
+
+    List<String> getAllUserList();
+
+    List<String> getUserListByRole(@Param("roleId")String roleId);
 }

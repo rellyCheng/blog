@@ -1,6 +1,10 @@
 package com.relly.blog.mapper;
 
+import com.relly.blog.common.model.PageObject;
+import com.relly.blog.common.model.PageResult;
+import com.relly.blog.dto.RoleDto;
 import com.relly.blog.entity.RoleEntity;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -53,5 +57,21 @@ public interface RoleMapper {
      */
     int updateByPrimaryKey(RoleEntity record);
 
-    List<RoleEntity> getRoleListByUserId(String userId);
+    List<RoleEntity> getRoleListByUserId(@Param("empId") String userId);
+
+    int getRoleListCount();
+
+    List<RoleDto> getRoleList(@Param("pageObject") PageObject pageObject);
+
+    int getCountByName(@Param("role") String role);
+
+    void insertBatch(@Param("uids") List<String> uids, @Param("roleId") String roleId);
+
+    void delBatch(@Param("uids") List<String> uids, @Param("roleId") String roleId);
+
+    List getPermissionByRole(@Param("roleId") String roleId);
+
+    void insertBatchPermission(@Param("targetPermissions") List<String> targetPermissions, @Param("roleId") String roleId);
+
+    void delBatchPermission(@Param("targetPermissions") List<String> targetPermissions, @Param("roleId") String roleId);
 }

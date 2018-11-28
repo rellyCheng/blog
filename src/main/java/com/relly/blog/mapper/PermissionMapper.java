@@ -71,4 +71,6 @@ public interface PermissionMapper {
     List<String> getPidbyUid(@Param("userId")String userId);
 
     List<PermissionDTO> getPmenuList(@Param("userId")String userId);
+
+    List getAllPermissionList();
 }

@@ -55,7 +55,7 @@ public class LoginController {
         map.put("token",jwtToken);
         map.put("name",userEntity.getName());
         List<String> authList = new ArrayList<>();
-        authList.add("admin");
+//        authList.add("admin");
         authList.add("user");
         map.put("currentAuthority",authList);
             // 判断当前用户是否登录

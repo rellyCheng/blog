@@ -200,6 +200,28 @@
     WHERE
 	u.id = #{userId}
   </select>
+    <select id="getAllUserList" resultType="java.lang.String">
+        SELECT a.id AS 'key'
+        FROM
+            user a
+        WHERE
+            a.id IN (
+                SELECT b.uid
+                FROM
+                    user_role b
+                WHERE
+                    role_id = #{roleId}
+            )
+            AND isDelete = 0
+    </select>
+  <select id="getUserListByRole" resultType="java.lang.String">
+  SELECT *
+  FROM 'user' u
+  JOIN user_role ur
+  ON u.id = ur.uid
+  WHERE isDelete = 0 AND ur.role_id = #{roleId}
+
+  </select>
   <sql id="limit">
         limit #{pageObject.startIndex}, #{pageObject.pageSize}
   </sql>

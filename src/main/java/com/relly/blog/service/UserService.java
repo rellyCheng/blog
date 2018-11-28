@@ -6,6 +6,8 @@ import com.relly.blog.dto.UserDTO;
 import com.relly.blog.dto.UserDetailDTO;
 import com.relly.blog.entity.UserEntity;
 
+import java.util.List;
+
 public interface UserService {
 
     UserEntity getUserByUserName(String userName);
@@ -19,4 +21,8 @@ public interface UserService {
     UserDetailDTO getUserDetail(String id);
 
     void updateTags(String currentUserId,String tag);
+
+    List getUserListByRole(String roleId);
+
+    List getAllUserList();
 }
