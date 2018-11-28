@@ -3,11 +3,13 @@ package com.relly.blog.controller;
 import com.relly.blog.common.model.JsonResult;
 import com.relly.blog.common.model.PageResult;
 import com.relly.blog.dto.AllPermissionDTO;
+import com.relly.blog.dto.AllUserDTO;
 import com.relly.blog.entity.RoleEntity;
 import com.relly.blog.entity.UserEntity;
 import com.relly.blog.service.RoleService;
 import com.relly.blog.service.UserService;
 import com.relly.blog.utils.JwtUtil;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,7 +36,7 @@ public class RoleController {
     private RoleService roleService;
 
     @PostMapping("/getRoleList")
-
+    @RequiresPermissions("userManagement")
     public JsonResult getRoleList(@NotNull(message = "当前页不能为空") Integer pageCurrent,
                                   @NotNull(message = "每页条数不能为空") Integer pageSize) {
         PageResult result = roleService.getRoleList(pageCurrent, pageSize);
@@ -53,16 +55,16 @@ public class RoleController {
         return new JsonResult();
     }
     @PostMapping("/addUserForRole")
-    public JsonResult addUserForRole(@RequestParam(required = false, value = "addUsers[]")List<String> addUsers,
-                                     @RequestParam(required = false, value = "deleteUsers[]")List<String> deleteUsers,
+    public JsonResult addUserForRole(@RequestParam(required = false, value = "addUsers")List<String> addUsers,
+                                     @RequestParam(required = false, value = "deleteUsers")List<String> deleteUsers,
                                      String roleId){
         if (deleteUsers==null&&addUsers==null){
             throw new SecurityException("无效的数据!");
         }
-        if (addUsers!=null){
+        if (addUsers!=null&&addUsers.size()!=0){
             roleService.addUserForRole(addUsers, roleId);
         }
-        if (deleteUsers!=null){
+        if (deleteUsers!=null&&deleteUsers.size()!=0){
             roleService.delUserForRole(deleteUsers, roleId);
         }
         return new JsonResult();
@@ -85,10 +87,10 @@ public class RoleController {
     @PostMapping("/getUserByRole")
     public JsonResult getEmpByRole(String roleId){
         Map map = new HashMap();
-        List haveList = userService.getUserListByRole(roleId);
-        List allEmpList = userService.getAllUserList();
+        List<String> haveList = userService.getUserListByRole(roleId);
+        List<AllUserDTO> allUserList = userService.getAllUserList();
         map.put("haveList",haveList);
-        map.put("allUserList",allEmpList);
+        map.put("allUserList",allUserList);
         return new JsonResult(map);
     }
     @RequestMapping("/getPermissionByRole")

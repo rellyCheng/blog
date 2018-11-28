@@ -1,6 +1,7 @@
 package com.relly.blog.mapper;
 
 import com.relly.blog.common.model.PageObject;
+import com.relly.blog.dto.AllUserDTO;
 import com.relly.blog.dto.UserDTO;
 import com.relly.blog.dto.UserDetailDTO;
 import com.relly.blog.entity.UserEntity;
@@ -66,7 +67,7 @@ public interface UserMapper {
 
     UserDetailDTO getUserDetail(String userId);
 
-    List<String> getAllUserList();
+    List<AllUserDTO> getAllUserList();
 
     List<String> getUserListByRole(@Param("roleId")String roleId);
 }

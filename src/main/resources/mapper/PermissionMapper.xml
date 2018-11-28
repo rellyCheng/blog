@@ -283,6 +283,14 @@
     id AS 'key'
     from permission where  isDelete = 0
     </select>
+  <select id="getPermissionListByRoleId" resultType="com.relly.blog.entity.PermissionEntity">
+
+      SELECT
+           *
+      FROM `role_permission` a
+          JOIN role b ON a.role_id = b.id
+      WHERE a.role_id = #{roleId};
+  </select>
   <sql id="limit">
         limit #{pageObject.startIndex}, #{pageObject.pageSize}
   </sql>

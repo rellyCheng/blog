@@ -2,6 +2,7 @@ package com.relly.blog.service;
 
 
 import com.relly.blog.common.model.PageResult;
+import com.relly.blog.dto.AllUserDTO;
 import com.relly.blog.dto.UserDTO;
 import com.relly.blog.dto.UserDetailDTO;
 import com.relly.blog.entity.UserEntity;
@@ -22,7 +23,7 @@ public interface UserService {
 
     void updateTags(String currentUserId,String tag);
 
-    List getUserListByRole(String roleId);
+    List<String> getUserListByRole(String roleId);
 
-    List getAllUserList();
+    List<AllUserDTO> getAllUserList();
 }

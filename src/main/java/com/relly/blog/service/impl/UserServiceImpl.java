@@ -1,6 +1,7 @@
 package com.relly.blog.service.impl;
 
 import com.relly.blog.common.model.PageResult;
+import com.relly.blog.dto.AllUserDTO;
 import com.relly.blog.dto.UserDTO;
 import com.relly.blog.dto.UserDetailDTO;
 import com.relly.blog.entity.UserDetailEntity;
@@ -125,15 +126,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List getUserListByRole(String roleId) {
+    public List<String> getUserListByRole(String roleId) {
         List<String> list = userMapper.getUserListByRole(roleId);
         return list;
     }
 
     @Override
-    public List getAllUserList() {
-        List<String> list = userMapper.getAllUserList();
-        return null;
+    public List<AllUserDTO> getAllUserList() {
+        List<AllUserDTO> list = userMapper.getAllUserList();
+        return list;
     }
 
 }

@@ -195,8 +195,7 @@
   </select>
   <select id="getRoleListByUserId" resultType="com.relly.blog.entity.RoleEntity">
       SELECT
-            b.id,
-            b.name
+            *
         FROM `user_role` a
             JOIN role b ON a.role_id = b.id
         WHERE a.uid = #{userId};

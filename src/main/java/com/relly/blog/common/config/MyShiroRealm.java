@@ -1,7 +1,11 @@
 package com.relly.blog.common.config;
 
 
+import com.relly.blog.entity.PermissionEntity;
+import com.relly.blog.entity.RoleEntity;
 import com.relly.blog.entity.UserEntity;
+import com.relly.blog.mapper.PermissionMapper;
+import com.relly.blog.mapper.RoleMapper;
 import com.relly.blog.service.UserService;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
@@ -14,26 +18,30 @@ import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.util.ByteSource;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 public class MyShiroRealm extends AuthorizingRealm {
 
     @Resource
     private UserService userService;
+    @Resource
+    private RoleMapper roleMapper;
+    @Resource
+    private PermissionMapper permissionMapper;
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
         SimpleAuthorizationInfo authorizationInfo = new SimpleAuthorizationInfo();
-//        SysUser userInfo  = (SysUser)principals.getPrimaryPrincipal();
-//        List<SysRole> roleList = sysRoleMapper.getRoleList(userInfo.getUid());
-//        System.out.println(roleList);
-//        for(SysRole role:roleList){
-//            System.out.println(role.getRole());
-//            List<SysPermission> pList = sysPermissionMapper.getPermissionListByRoleId(role.getId());
-//            authorizationInfo.addRole(role.getRole());
-//            for(SysPermission p:pList){
-//                authorizationInfo.addStringPermission(p.getPermission());
-//            }
-//        }
-        //authorizationInfo.addStringPermission("userInfo:del");
+        UserEntity userInfo  = (UserEntity)principals.getPrimaryPrincipal();
+        List<RoleEntity> roleList = roleMapper.getRoleListByUserId(userInfo.getId());
+        System.out.println(roleList);
+        for(RoleEntity role:roleList){
+            System.out.println(role.getRole());
+            List<PermissionEntity> pList = permissionMapper.getPermissionListByRoleId(role.getId());
+            authorizationInfo.addRole(role.getRole());
+            for(PermissionEntity p:pList){
+                authorizationInfo.addStringPermission(p.getPermission());
+            }
+        }
         return authorizationInfo;
     }
 

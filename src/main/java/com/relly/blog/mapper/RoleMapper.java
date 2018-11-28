@@ -1,7 +1,6 @@
 package com.relly.blog.mapper;
 
 import com.relly.blog.common.model.PageObject;
-import com.relly.blog.common.model.PageResult;
 import com.relly.blog.dto.RoleDto;
 import com.relly.blog.entity.RoleEntity;
 import org.apache.ibatis.annotations.Param;
@@ -57,7 +56,7 @@ public interface RoleMapper {
      */
     int updateByPrimaryKey(RoleEntity record);
 
-    List<RoleEntity> getRoleListByUserId(@Param("empId") String userId);
+    List<RoleEntity> getRoleListByUserId(@Param("userId") String userId);
 
     int getRoleListCount();
 

@@ -74,4 +74,6 @@ public interface PermissionMapper {
     List<PermissionDTO> getPmenuList(@Param("userId")String userId);
 
     List<AllPermissionDTO> getAllPermissionList();
+
+    List<PermissionEntity> getPermissionListByRoleId(String roleId);
 }
