@@ -3,6 +3,8 @@ package com.relly.blog.common.exception;
 import com.relly.blog.common.model.JsonResult;
 import com.relly.blog.utils.HttpUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.shiro.authz.UnauthenticatedException;
+import org.apache.shiro.authz.UnauthorizedException;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -67,12 +69,13 @@ public class ControllerExceptionHandler {
 
     @ExceptionHandler(value = Exception.class)
     public Object allExceptionHandler(Exception exception, HttpServletRequest request, HttpServletResponse response) {
-         log.error("error :", exception);
-        if (HttpUtil.isAjaxRequest(request)) {
-            HttpUtil.responseUseJsonType(response, new JsonResult(exception));
-            return null;
+        log.error("error :", exception);
+        String message = exception.getMessage();
+        if (exception instanceof UnauthenticatedException){
+            message = "当前用户权限不足,请联系管理员";
+            response.setStatus(403);
         }
-        return getModelAndView(exception.getMessage() + "  " + exception.toString());
+        return handResult(request, response, message);
     }
 
     private Object handResult(HttpServletRequest request, HttpServletResponse response, String message) {

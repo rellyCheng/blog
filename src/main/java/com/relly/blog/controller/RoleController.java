@@ -36,7 +36,7 @@ public class RoleController {
     private RoleService roleService;
 
     @PostMapping("/getRoleList")
-    @RequiresPermissions("userManagement")
+//    @RequiresPermissions("roleManagement")
     public JsonResult getRoleList(@NotNull(message = "当前页不能为空") Integer pageCurrent,
                                   @NotNull(message = "每页条数不能为空") Integer pageSize) {
         PageResult result = roleService.getRoleList(pageCurrent, pageSize);

@@ -2,7 +2,10 @@ package com.relly.blog.api;
 
 import com.relly.blog.common.exception.ServiceException;
 import com.relly.blog.common.model.JsonResult;
+import com.relly.blog.dto.AllPermissionDTO;
+import com.relly.blog.entity.RoleEntity;
 import com.relly.blog.entity.UserEntity;
+import com.relly.blog.service.PermissionService;
 import com.relly.blog.service.UserService;
 import com.relly.blog.utils.JwtUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -29,6 +32,9 @@ public class LoginController {
     @Resource
     private UserService userService;
 
+    @Resource
+    private PermissionService permissionService;
+
     /**
 
      *@description 账号登录接口
@@ -54,8 +60,7 @@ public class LoginController {
         Map<String,Object> map = new HashMap<>(3);
         map.put("token",jwtToken);
         map.put("name",userEntity.getName());
-        List<String> authList = new ArrayList<>();
-//        authList.add("admin");
+        List<String> authList = permissionService.getPermissionListByUserId(userEntity.getId());
         authList.add("user");
         map.put("currentAuthority",authList);
             // 判断当前用户是否登录

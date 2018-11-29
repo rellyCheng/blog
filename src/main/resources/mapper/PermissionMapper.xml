@@ -291,6 +291,18 @@
           JOIN role b ON a.role_id = b.id
       WHERE a.role_id = #{roleId};
   </select>
+  <select id="getPermissionListByUserId" resultType="java.lang.String">
+    SELECT
+	p.permission
+    FROM
+        permission p
+    JOIN role_permission rp ON rp.permission_id = p.id
+    JOIN role r ON rp.role_id = r.id
+    JOIN user_role ur ON ur.role_id = r.id
+    JOIN `user` u ON u.id = ur.uid
+    WHERE
+	u.id = #{userId}
+  </select>
   <sql id="limit">
         limit #{pageObject.startIndex}, #{pageObject.pageSize}
   </sql>

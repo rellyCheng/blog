@@ -76,4 +76,6 @@ public interface PermissionMapper {
     List<AllPermissionDTO> getAllPermissionList();
 
     List<PermissionEntity> getPermissionListByRoleId(String roleId);
+
+    List<String> getPermissionListByUserId(String userId);
 }

@@ -1,6 +1,7 @@
 package com.relly.blog.service;
 
 import com.relly.blog.common.model.PageResult;
+import com.relly.blog.dto.AllPermissionDTO;
 import com.relly.blog.entity.PermissionEntity;
 
 import java.util.List;
@@ -13,4 +14,6 @@ public interface PermissionService {
     List pmenuList(String type);
 
     List getMenuList(String id);
+
+    List<String> getPermissionListByUserId(String userId);
 }

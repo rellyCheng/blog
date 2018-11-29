@@ -2,6 +2,7 @@ package com.relly.blog.service.impl;
 
 import com.relly.blog.common.exception.ServiceException;
 import com.relly.blog.common.model.PageResult;
+import com.relly.blog.dto.AllPermissionDTO;
 import com.relly.blog.dto.PermissionDTO;
 import com.relly.blog.entity.PermissionEntity;
 import com.relly.blog.entity.RoleEntity;
@@ -78,6 +79,12 @@ public class PermissionServiceImpl implements PermissionService {
             List<PermissionDTO> childrenList = permissionMapper.getSmenuList(permissionDto.getId(),pidList);
             permissionDto.setChildren(childrenList);
         }
+        return list;
+    }
+
+    @Override
+    public List<String> getPermissionListByUserId(String userId) {
+        List<String> list = permissionMapper.getPermissionListByUserId(userId);
         return list;
     }
 }
