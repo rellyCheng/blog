@@ -102,6 +102,7 @@ public class NoticeEntity extends CommonBaseEntity implements Serializable {
      */
     private static final long serialVersionUID = 1L;
 
-
     private String userId;
+
+    private String sendId;
 }

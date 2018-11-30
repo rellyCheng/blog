@@ -6,6 +6,7 @@ import com.relly.blog.dto.UserDTO;
 import com.relly.blog.dto.UserDetailDTO;
 import com.relly.blog.entity.UserDetailEntity;
 import com.relly.blog.entity.UserEntity;
+import com.relly.blog.mapper.NoticeMapper;
 import com.relly.blog.mapper.UserDetailMapper;
 import com.relly.blog.mapper.UserMapper;
 import com.relly.blog.service.UserService;
@@ -30,6 +31,8 @@ public class UserServiceImpl implements UserService {
     private UserMapper userMapper;
     @Resource
     private UserDetailMapper userDetailMapper;
+    @Resource
+    private NoticeMapper noticeMapper;
     @Override
     public UserEntity getUserByUserName(String userName) {
         UserEntity userEntity = userMapper.getUserByUserName(userName);
@@ -88,6 +91,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDetailDTO getUserDetail(String id) {
         UserDetailDTO userDetailDTO = userMapper.getUserDetail(id);
+        //省市区
         Province province = Province.builder()
                 .key(userDetailDTO.getProvinceKey())
                 .label(userDetailDTO.getProvince())
@@ -101,9 +105,12 @@ public class UserServiceImpl implements UserService {
                 .province(province)
                 .build();
         userDetailDTO.setGeographic(geographic);
-        userDetailDTO.setNotifyCount(10);
-        String tags = userDetailDTO.getTags();
 
+        //获取通知条数
+        int noticeCount = noticeMapper.getNoticeCountByUserId(id);
+        userDetailDTO.setNotifyCount(noticeCount);
+
+        String tags = userDetailDTO.getTags();
         String[] strs = tags.split(",");
         List<Tags> list = new ArrayList<>();
         for (int i = 0; i < strs.length ; i++) {

@@ -1,6 +1,7 @@
 package com.relly.blog.controller;
 
 import com.relly.blog.common.model.JsonResult;
+import com.relly.blog.dto.NoticeDTO;
 import com.relly.blog.entity.NoticeEntity;
 import com.relly.blog.entity.UserEntity;
 import com.relly.blog.service.NoticeService;
@@ -32,7 +33,7 @@ public class NoticeController {
     @PostMapping("getNoticeList")
     public JsonResult getNoticeList(HttpServletRequest request){
         UserEntity currentUser = JwtUtil.getUser(request);
-        List<NoticeEntity> list  = noticeService.getNoticeList(currentUser.getId());
+        List<NoticeDTO> list  = noticeService.getNoticeList(currentUser.getId());
         return new JsonResult(list);
     }
 }

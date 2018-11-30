@@ -182,19 +182,17 @@
       userId = #{userId,jdbcType=INTEGER}
     where id = #{id,jdbcType=CHAR}
   </update>
-  <select id="getNoticeList" resultType="com.relly.blog.entity.NoticeEntity">
-  SELECT *
-  CASE
-  WHEN type = 0
-  THEN
-  'notification'
-  WHEN type = 1
-  THEN
-  'message'
-  WHEN type = 2
-  THEN
-  'event'
+  <select id="getNoticeList" resultType="com.relly.blog.dto.NoticeDTO">
+  SELECT id,datetime,deadline,title,description,avatar,`status`,isRead,userId,sendId,
+  CASE n.type
+  WHEN 0 THEN 'notification'
+  WHEN 1 THEN 'message'
+  WHEN 2  THEN 'event'
   END AS type
-  FROM notice WHERE isRead = 0 userId =#{userId};
+  FROM notice n WHERE isRead = 0 and userId = #{userId}
+  </select>
+  <select id="getNoticeCountByUserId" resultType="java.lang.Integer">
+    SELECT COUNT(*)
+    FROM notice where isRead = 0 AND userId = #{userId}
   </select>
 </mapper>

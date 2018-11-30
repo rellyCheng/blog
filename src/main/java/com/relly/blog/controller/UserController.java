@@ -11,6 +11,7 @@ import com.relly.blog.service.UserService;
 import com.relly.blog.utils.IdUtil;
 import com.relly.blog.utils.JwtUtil;
 import com.relly.blog.utils.MD5salt;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,12 +33,15 @@ public class UserController {
     @Resource
     private UserService userService;
 
+    @Value("${file.address}")
+    private String fileAddress;
+
     /**
      *
      * 注册用户
      * @author Thunder
      * @date 2018/11/16 17:16
-     * @param [request, userDTO]
+     * @param request, userDTO
      * @return com.relly.blog.common.model.JsonResult
      */
     @PostMapping("registUser")
@@ -71,6 +75,9 @@ public class UserController {
     @PostMapping("updateUserDetail")
     public JsonResult updateUserDetail(@RequestBody @Validated UserDetailDTO userDetailDTO, HttpServletRequest request){
         UserEntity currentUser = JwtUtil.getUser(request);
+        if(userDetailDTO.getAvatar()!=null){
+            userDetailDTO.setAvatar(fileAddress+userDetailDTO.getAvatar());
+        }
         userDetailDTO.setUserId(currentUser.getId());
         userService.updateUserDetail(userDetailDTO);
         return new JsonResult();

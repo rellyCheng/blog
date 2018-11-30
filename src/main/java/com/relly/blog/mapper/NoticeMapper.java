@@ -1,5 +1,6 @@
 package com.relly.blog.mapper;
 
+import com.relly.blog.dto.NoticeDTO;
 import com.relly.blog.entity.NoticeEntity;
 
 import java.util.List;
@@ -53,5 +54,7 @@ public interface NoticeMapper {
      */
     int updateByPrimaryKey(NoticeEntity record);
 
-    List<NoticeEntity> getNoticeList(String userId);
+    List<NoticeDTO> getNoticeList(String userId);
+
+    int getNoticeCountByUserId(String userId);
 }

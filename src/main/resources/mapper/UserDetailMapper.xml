@@ -226,4 +226,10 @@
     WHERE
 	userId = #{userId,jdbcType=CHAR}
   </select>
+  <select id="selectByUserId" resultType="com.relly.blog.entity.UserDetailEntity">
+    select
+    <include refid="Base_Column_List" />
+    from user_detail
+    where userId = #{userId,jdbcType=CHAR}
+  </select>
 </mapper>
