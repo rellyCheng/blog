@@ -2,8 +2,7 @@ package com.relly.blog.api;
 
 import com.relly.blog.common.exception.ServiceException;
 import com.relly.blog.common.model.JsonResult;
-import com.relly.blog.dto.AllPermissionDTO;
-import com.relly.blog.entity.RoleEntity;
+import com.relly.blog.dto.UserRegisterDTO;
 import com.relly.blog.entity.UserEntity;
 import com.relly.blog.service.PermissionService;
 import com.relly.blog.service.UserService;
@@ -14,12 +13,12 @@ import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import javax.validation.constraints.NotBlank;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -90,6 +89,16 @@ public class LoginController {
         currentUser.logout();
         Map<String,Object> map = new HashMap<>(1);
         map.put("currentAuthority","admin");
+        return new JsonResult(map);
+
+
+    }
+
+    @PostMapping("register")
+    public JsonResult register(@RequestBody UserRegisterDTO userRegisterDTO){
+        String token = userService.register(userRegisterDTO);
+        Map<String,String> map = new HashMap<>();
+        map.put("token",token);
         return new JsonResult(map);
 
 

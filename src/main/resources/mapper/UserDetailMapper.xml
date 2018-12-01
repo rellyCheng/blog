@@ -86,8 +86,14 @@
       <if test="province != null">
         province,
       </if>
+      <if test="provinceKey != null">
+        provinceKey,
+      </if>
       <if test="city != null">
         city,
+      </if>
+      <if test="cityKey != null">
+        cityKey,
       </if>
       <if test="phone != null">
         phone,
@@ -97,6 +103,12 @@
       </if>
       <if test="title != null">
         title,
+      </if>
+      <if test="ipAddress != null">
+        ipAddress,
+      </if>
+      <if test="tags != null">
+        tags,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -121,8 +133,14 @@
       <if test="province != null">
         #{province,jdbcType=CHAR},
       </if>
+      <if test="provinceKey != null">
+        #{provinceKey,jdbcType=CHAR},
+      </if>
       <if test="city != null">
         #{city,jdbcType=CHAR},
+      </if>
+      <if test="cityKey != null">
+        #{cityKey,jdbcType=CHAR},
       </if>
       <if test="phone != null">
         #{phone,jdbcType=CHAR},
@@ -132,6 +150,12 @@
       </if>
       <if test="title != null">
         #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="ipAddress != null">
+        #{ipAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="tags != null">
+        #{tags,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>

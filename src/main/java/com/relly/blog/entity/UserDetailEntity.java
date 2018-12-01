@@ -53,5 +53,7 @@ public class UserDetailEntity extends CommonBaseEntity implements Serializable {
 
     private String tags;
 
+    private String ipAddress;
+
     private static final long serialVersionUID = 1L;
 }

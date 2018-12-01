@@ -1,9 +1,11 @@
 package com.relly.blog.service.impl;
 
+import com.relly.blog.common.exception.ServiceException;
 import com.relly.blog.common.model.PageResult;
 import com.relly.blog.dto.AllUserDTO;
 import com.relly.blog.dto.UserDTO;
 import com.relly.blog.dto.UserDetailDTO;
+import com.relly.blog.dto.UserRegisterDTO;
 import com.relly.blog.entity.UserDetailEntity;
 import com.relly.blog.entity.UserEntity;
 import com.relly.blog.mapper.NoticeMapper;
@@ -12,18 +14,17 @@ import com.relly.blog.mapper.UserMapper;
 import com.relly.blog.service.UserService;
 import com.relly.blog.utils.ConvertUtils;
 import com.relly.blog.utils.IdUtil;
+import com.relly.blog.utils.JwtUtil;
 import com.relly.blog.utils.MD5salt;
 import com.relly.blog.vo.City;
 import com.relly.blog.vo.Geographic;
 import com.relly.blog.vo.Province;
 import com.relly.blog.vo.Tags;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -110,16 +111,20 @@ public class UserServiceImpl implements UserService {
         int noticeCount = noticeMapper.getNoticeCountByUserId(id);
         userDetailDTO.setNotifyCount(noticeCount);
 
+
         String tags = userDetailDTO.getTags();
-        String[] strs = tags.split(",");
-        List<Tags> list = new ArrayList<>();
-        for (int i = 0; i < strs.length ; i++) {
-            Tags tags1 = new Tags();
-            tags1.setKey(i);
-            tags1.setLabel(strs[i]);
-            list.add(tags1);
+        if (tags!=null){
+            String[] strs = tags.split(",");
+            List<Tags> list = new ArrayList<>();
+            for (int i = 0; i < strs.length ; i++) {
+                Tags tags1 = new Tags();
+                tags1.setKey(i);
+                tags1.setLabel(strs[i]);
+                list.add(tags1);
+            }
+            userDetailDTO.setTagsList(list);
         }
-        userDetailDTO.setTagsList(list);
+
         return userDetailDTO;
     }
 
@@ -142,6 +147,45 @@ public class UserServiceImpl implements UserService {
     public List<AllUserDTO> getAllUserList() {
         List<AllUserDTO> list = userMapper.getAllUserList();
         return list;
+    }
+
+    @Override
+    @Transactional
+    public String register(UserRegisterDTO userRegisterDTO) {
+        UserEntity u = userMapper.getUserByUserName(userRegisterDTO.getEmail());
+        if (u!=null){
+            throw new ServiceException("当前邮箱已被注册！");
+        }
+        Map<String,String> map = MD5salt.md5salt(userRegisterDTO.getUserName(),userRegisterDTO.getPassword());
+        String userId = IdUtil.randomId();
+        u = new UserEntity();
+        u = (UserEntity) ConvertUtils.populate(userRegisterDTO,u);
+        u.setId(userId);
+        u.setCreateTime(new Date());
+        u.setUserName(userRegisterDTO.getUserName());
+        u.setUpdateUser("register");
+        u.setCreateUser("register");
+        u.setSalt(map.get("salt"));
+        u.setPassword(map.get("pwd"));
+        u.setVerify(map.get("verify"));
+        userMapper.insertSelective(u);
+
+        UserDetailEntity userDetailEntity = UserDetailEntity.builder()
+                .id(IdUtil.randomId())
+                .userId(userId)
+                .email(userRegisterDTO.getEmail())
+                .city(userRegisterDTO.getCity())
+                .cityKey(userRegisterDTO.getCityKey())
+                .province(userRegisterDTO.getProvince())
+                .provinceKey(userRegisterDTO.getProvinceKey())
+                .ipAddress(userRegisterDTO.getIpAddress())
+                .country(userRegisterDTO.getCountry())
+                .tags("All Star")
+                .build();
+        userDetailMapper.insertSelective(userDetailEntity);
+
+        String jwtToken = JwtUtil.sign(userRegisterDTO.getUserName(),userId,map.get("verify"),userRegisterDTO.getName());
+        return jwtToken;
     }
 
 }
