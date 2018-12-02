@@ -19,6 +19,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import javax.validation.constraints.NotBlank;
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -94,13 +99,48 @@ public class LoginController {
 
     }
 
+   /**
+
+    *@description 注册
+    *@param userRegisterDTO
+    *@return
+    *@author relly
+    *@date 2018/12/2
+    *@update
+    */
     @PostMapping("register")
     public JsonResult register(@RequestBody UserRegisterDTO userRegisterDTO){
         String token = userService.register(userRegisterDTO);
         Map<String,String> map = new HashMap<>();
         map.put("token",token);
         return new JsonResult(map);
+    }
 
+    /**
+     *@description 根据IP获取地址 可用作判断常用地址异常
+     *@param
+     *@return
+     *@author relly
+     *@date 2018/12/2
+     *@update
+     */
+    @PostMapping("getIpInfo")
+    public JsonResult getIpInfo(){
+        try {
+            URL url = new URL("http://ip.taobao.com/service/getIpInfo.php?ip=myip");
+            HttpURLConnection urlCon = (HttpURLConnection) url.openConnection();
+            urlCon.connect();
+            InputStream inputStream = urlCon.getInputStream();
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
+            String s = bufferedReader.readLine();
+            Map<String,Object> map = new HashMap<>();
+            map.put("ipInfo",s);
+            return new JsonResult(map);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new ServiceException("淘宝IP地址库异常");
+        }
 
     }
+
 }

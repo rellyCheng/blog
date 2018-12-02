@@ -8,6 +8,7 @@ import com.relly.blog.mapper.ArticleMapper;
 import com.relly.blog.service.ArticleService;
 import com.relly.blog.utils.IdUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -20,6 +21,9 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Resource
     private ArticleMapper articleMapper;
+
+    @Value("${file.address}")
+    private String fileAddress;
 
     @Override
     public List<ArticleDTO> getArticleListByUser(String userId) {
@@ -42,7 +46,7 @@ public class ArticleServiceImpl implements ArticleService {
         ArticleEntity articleEntity = ArticleEntity.builder()
                 .content(articleDTO.getContent())
                 .title(articleDTO.getTitle())
-                .cover(articleDTO.getCover())
+                .cover(fileAddress+articleDTO.getCover())
                 .createTime(new Date())
                 .type(articleDTO.getType())
                 .isPublic(articleDTO.getIsPublic()?0:1)
