@@ -70,4 +70,6 @@ public interface UserMapper {
     List<AllUserDTO> getAllUserList();
 
     List<String> getUserListByRole(@Param("roleId")String roleId);
+
+    UserEntity getUserByVerify(String verify);
 }

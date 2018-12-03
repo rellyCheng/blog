@@ -273,7 +273,7 @@
     select
     *,
     id as articleId
-    from article where isDelete = 0
+    from article where isDelete = 0 and createUser=#{userId}
     ORDER BY createTime DESC
     <include refid="limit"/>
   </select>

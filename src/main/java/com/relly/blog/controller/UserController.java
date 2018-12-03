@@ -4,21 +4,15 @@ import com.relly.blog.common.model.JsonResult;
 import com.relly.blog.common.model.PageResult;
 import com.relly.blog.dto.UserDTO;
 import com.relly.blog.dto.UserDetailDTO;
-import com.relly.blog.entity.UserDetailEntity;
 import com.relly.blog.entity.UserEntity;
-import com.relly.blog.mapper.UserMapper;
 import com.relly.blog.service.UserService;
-import com.relly.blog.utils.IdUtil;
 import com.relly.blog.utils.JwtUtil;
-import com.relly.blog.utils.MD5salt;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.util.Date;
-import java.util.Map;
 
 /**
  * @Author Relly
@@ -96,4 +90,6 @@ public class UserController {
         userService.updateTags(currentUser.getId(),tag);
         return new JsonResult();
     }
+
+
 }

@@ -6,6 +6,7 @@ import com.relly.blog.dto.UserRegisterDTO;
 import com.relly.blog.entity.UserEntity;
 import com.relly.blog.service.PermissionService;
 import com.relly.blog.service.UserService;
+import com.relly.blog.utils.HttpUtil;
 import com.relly.blog.utils.JwtUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.SecurityUtils;
@@ -18,7 +19,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -125,9 +128,10 @@ public class LoginController {
      *@update
      */
     @PostMapping("getIpInfo")
-    public JsonResult getIpInfo(){
+    public JsonResult getIpInfo(HttpServletRequest request){
+        String ip = HttpUtil.getIp(request);
         try {
-            URL url = new URL("http://ip.taobao.com/service/getIpInfo.php?ip=myip");
+            URL url = new URL("http://ip.taobao.com/service/getIpInfo.php?ip="+ip);
             HttpURLConnection urlCon = (HttpURLConnection) url.openConnection();
             urlCon.connect();
             InputStream inputStream = urlCon.getInputStream();
@@ -143,4 +147,16 @@ public class LoginController {
 
     }
 
+    @PostMapping("sendMail")
+    public JsonResult sendMail(String title, String url, String email){
+        userService.sendMail(title,url,email);
+        return new JsonResult();
+    }
+
+
+    @PostMapping("activation")
+    public JsonResult activation(@NotNull String verify){
+        userService.activation(verify);
+        return new JsonResult();
+    }
 }

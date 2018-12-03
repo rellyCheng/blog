@@ -29,4 +29,8 @@ public interface UserService {
     List<AllUserDTO> getAllUserList();
 
     String register(UserRegisterDTO userRegisterDTO);
+
+    void sendMail(String title, String url, String email);
+
+    void activation(String verify);
 }

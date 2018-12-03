@@ -3,6 +3,7 @@ package com.relly.blog.utils;
 
 import com.alibaba.fastjson.JSON;
 import com.relly.blog.common.model.JsonResult;
+import net.logstash.logback.encoder.org.apache.commons.lang.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -120,5 +121,23 @@ public class HttpUtil {
         // 将高24位置0
         sb.append(String.valueOf((longIp & 0x000000FF)));
         return sb.toString();
+    }
+
+    public static String getIp(HttpServletRequest request) {
+        String ip = request.getHeader("X-Forwarded-For");
+        if(StringUtils.isNotEmpty(ip) && !"unKnown".equalsIgnoreCase(ip)){
+               //多次反向代理后会有多个ip值，第一个ip才是真实ip
+               int index = ip.indexOf(",");
+              if(index != -1){
+                       return ip.substring(0,index);
+                  }else{
+                      return ip;
+                   }
+           }
+        ip = request.getHeader("X-Real-IP");
+        if(StringUtils.isNotEmpty(ip) && !"unKnown".equalsIgnoreCase(ip)){
+               return ip;
+          }
+        return request.getRemoteAddr();
     }
 }

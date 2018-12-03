@@ -20,11 +20,18 @@ import com.relly.blog.vo.City;
 import com.relly.blog.vo.Geographic;
 import com.relly.blog.vo.Province;
 import com.relly.blog.vo.Tags;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -34,6 +41,14 @@ public class UserServiceImpl implements UserService {
     private UserDetailMapper userDetailMapper;
     @Resource
     private NoticeMapper noticeMapper;
+    @Resource
+    private JavaMailSender javaMailSender;
+
+    @Value("${spring.mail.username}")
+    private String from;
+
+
+
     @Override
     public UserEntity getUserByUserName(String userName) {
         UserEntity userEntity = userMapper.getUserByUserName(userName);
@@ -156,6 +171,7 @@ public class UserServiceImpl implements UserService {
         if (u!=null){
             throw new ServiceException("当前邮箱已被注册！");
         }
+
         Map<String,String> map = MD5salt.md5salt(userRegisterDTO.getUserName(),userRegisterDTO.getPassword());
         String userId = IdUtil.randomId();
         u = new UserEntity();
@@ -168,6 +184,7 @@ public class UserServiceImpl implements UserService {
         u.setSalt(map.get("salt"));
         u.setPassword(map.get("pwd"));
         u.setVerify(map.get("verify"));
+        u.setIsDelete(1);
         userMapper.insertSelective(u);
 
         UserDetailEntity userDetailEntity = UserDetailEntity.builder()
@@ -184,8 +201,35 @@ public class UserServiceImpl implements UserService {
                 .build();
         userDetailMapper.insertSelective(userDetailEntity);
 
+
+        //发送激活邮件
+        String title = "注册All In All，验证邮箱，激活账号";
+        String url = "点击链接激活账号http://all.1024sir.com/publicApi/activation?verify="+map.get("verify");
+        sendMail(title,url,userRegisterDTO.getEmail());
+
         String jwtToken = JwtUtil.sign(userRegisterDTO.getUserName(),userId,map.get("verify"),userRegisterDTO.getName());
         return jwtToken;
+
+    }
+
+    @Async
+    @Override
+    public void sendMail(String title, String url, String email) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom(from); // 发送人的邮箱
+        message.setSubject(title); //标题
+        message.setTo(email); //发给谁  对方邮箱
+        message.setText(url); //内容
+        javaMailSender.send(message); //发送
+    }
+
+    @Override
+    public void activation(String verify) {
+        UserEntity userEntity = userMapper.getUserByVerify(verify);
+        if (userEntity!=null){
+            userEntity.setIsDelete(0);
+            userMapper.updateByPrimaryKeySelective(userEntity);
+        }
     }
 
 }
