@@ -295,7 +295,7 @@ public class UserServiceImpl implements UserService {
                 String userId = IdUtil.randomId();
                 Map<String,String> map = MD5salt.md5salt(userName,"123123");
                 UserEntity userEntity = UserEntity.builder()
-                        .userName(data.getString("login")+data.getString("id"))
+                        .userName(userName)
                         .createUser("github")
                         .updateUser(data.getString("id"))
                         .bgColor("#a0b")

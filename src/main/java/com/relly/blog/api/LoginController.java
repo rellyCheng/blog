@@ -17,9 +17,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.view.RedirectView;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.io.BufferedReader;
@@ -172,10 +174,13 @@ public class LoginController {
      * @return com.relly.blog.common.model.JsonResult
      */
     @RequestMapping("githubUser")
-    public JsonResult githubUser(@NotNull String code){
+    public JsonResult githubUser(@NotNull String code, HttpServletResponse response){
         try {
             Map<String,Object> map = userService.githubUser(code);
+
+            response.sendRedirect("http://localhost:8000/account/center?token="+map.get("token")+"&auth="+map.get("currentAuthority"));
             return new JsonResult(map);
+
         } catch (IOException e) {
             e.printStackTrace();
             throw new ServiceException("github登录失败");
