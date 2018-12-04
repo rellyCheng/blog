@@ -69,7 +69,7 @@ public class JwtUtil {
      * @param id 用户id
      * @return 加密的token
      */
-    public static String sign(String username,String id,String verify,String name) {
+    public static String sign(String username,String id,String verify) {
         try {
             Date date = new Date(System.currentTimeMillis()+EXPIRE_TIME);
             Algorithm algorithm = Algorithm.HMAC256(id);
@@ -78,7 +78,6 @@ public class JwtUtil {
                     .withClaim("username", username)
                     .withClaim("id", id)
                     .withClaim("verify", verify)
-                    .withClaim("name", name)
                     .withExpiresAt(date)
                     .sign(algorithm);
         } catch (UnsupportedEncodingException e) {

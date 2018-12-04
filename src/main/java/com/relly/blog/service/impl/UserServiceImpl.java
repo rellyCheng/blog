@@ -1,5 +1,6 @@
 package com.relly.blog.service.impl;
 
+import com.alibaba.fastjson.JSONObject;
 import com.relly.blog.common.exception.ServiceException;
 import com.relly.blog.common.model.PageResult;
 import com.relly.blog.dto.AllUserDTO;
@@ -9,6 +10,7 @@ import com.relly.blog.dto.UserRegisterDTO;
 import com.relly.blog.entity.UserDetailEntity;
 import com.relly.blog.entity.UserEntity;
 import com.relly.blog.mapper.NoticeMapper;
+import com.relly.blog.mapper.PermissionMapper;
 import com.relly.blog.mapper.UserDetailMapper;
 import com.relly.blog.mapper.UserMapper;
 import com.relly.blog.service.UserService;
@@ -16,6 +18,9 @@ import com.relly.blog.utils.ConvertUtils;
 import com.relly.blog.utils.IdUtil;
 import com.relly.blog.utils.JwtUtil;
 import com.relly.blog.utils.MD5salt;
+import com.relly.blog.utils.httpclient.HttpClientUtils;
+import com.relly.blog.utils.httpclient.core.HttpRequestConfig;
+import com.relly.blog.utils.httpclient.core.HttpRequestResult;
 import com.relly.blog.vo.City;
 import com.relly.blog.vo.Geographic;
 import com.relly.blog.vo.Province;
@@ -28,10 +33,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.*;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -43,6 +53,8 @@ public class UserServiceImpl implements UserService {
     private NoticeMapper noticeMapper;
     @Resource
     private JavaMailSender javaMailSender;
+    @Resource
+    private PermissionMapper permissionMapper;
 
     @Value("${spring.mail.username}")
     private String from;
@@ -207,7 +219,7 @@ public class UserServiceImpl implements UserService {
         String url = "点击链接激活账号http://all.1024sir.com/publicApi/activation?verify="+map.get("verify");
         sendMail(title,url,userRegisterDTO.getEmail());
 
-        String jwtToken = JwtUtil.sign(userRegisterDTO.getUserName(),userId,map.get("verify"),userRegisterDTO.getName());
+        String jwtToken = JwtUtil.sign(userRegisterDTO.getUserName(),userId,map.get("verify"));
         return jwtToken;
 
     }
@@ -232,4 +244,98 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    /**
+     *
+     * 根据code获取github的token
+     * @author Thunder
+     * @date 2018/12/4 14:23
+     * @param code
+     * @return java.util.Map<java.lang.String,java.lang.Object>
+     */
+    @Override
+    public Map<String, Object>  githubUser(String code) throws IOException {
+        String client_id = "0806acecdaa7e16a61c0";
+        String client_secret = "e6e5af2f22ad0a00cf259612140564433fd124b6";
+        HttpRequestConfig config = HttpRequestConfig.create().url("https://github.com/login/oauth/access_token?code="+code+"&client_id="+client_id+"&client_secret="+client_secret);
+        HttpRequestResult result = null;
+        try {
+            result = HttpClientUtils.post(config);
+            String token  = result.getResponseText();
+            System.out.println(token);
+            Map<String, Object> map= getGithubUserInfo(token);
+            return map;
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new ServiceException();
+        }
+    }
+
+    /**
+     *
+     * 根据github的token获取用户详细信息
+     * @author Thunder
+     * @date 2018/12/4 14:22
+     * @param token
+     * @return java.util.Map<java.lang.String,java.lang.Object>
+     */
+    public Map<String, Object> getGithubUserInfo(String token){
+        HttpRequestConfig config = HttpRequestConfig.create().url("https://api.github.com/user?"+token);
+        System.out.println("https://api.github.com/user?"+token);
+        HttpRequestResult result = null;
+        try {
+            result = HttpClientUtils.get(config);
+            System.out.println(result);
+            JSONObject data = JSONObject.parseObject(result.getResponseText());
+            //根据GitHub的登录名和id拼接用作用户名
+            String userName = "github"+data.getString("id");
+            UserEntity checkUser = userMapper.getUserByUserName(userName);
+            String jwtToken;
+            Map<String,Object> userMap = new HashMap<>(3);
+            if (checkUser==null){
+                String userId = IdUtil.randomId();
+                Map<String,String> map = MD5salt.md5salt(userName,"123123");
+                UserEntity userEntity = UserEntity.builder()
+                        .userName(data.getString("login")+data.getString("id"))
+                        .createUser("github")
+                        .updateUser(data.getString("id"))
+                        .bgColor("#a0b")
+                        .createTime(new Date())
+                        .id(userId)
+                        .isDelete(0)
+                        .name(data.getString("name"))
+                        .salt(map.get("salt"))
+                        .password(map.get("pwd"))
+                        .verify(map.get("verify"))
+                        .build();
+                userMapper.insertSelective(userEntity);
+
+                UserDetailEntity userDetailEntity = UserDetailEntity.builder()
+                        .id(IdUtil.randomId())
+                        .userId(userId)
+                        .email(data.getString("email"))
+                        .tags("All Star")
+                        .build();
+                userDetailMapper.insertSelective(userDetailEntity);
+                jwtToken = JwtUtil.sign(userName,userId,map.get("verify"));
+
+                userMap.put("token",jwtToken);
+                List<String> authList = new ArrayList<>();
+                authList.add("user");
+                userMap.put("currentAuthority",authList);
+            }else {
+                //生成JwtToken
+                jwtToken = JwtUtil.sign(userName,checkUser.getId(),checkUser.getVerify());
+                userMap.put("token",jwtToken);
+                List<String> authList = permissionMapper.getPermissionListByUserId(checkUser.getId());
+                authList.add("user");
+                userMap.put("currentAuthority",authList);
+            }
+           return userMap;
+
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new ServiceException();
+        }
+    }
 }

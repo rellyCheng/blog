@@ -240,9 +240,8 @@
    </select>
   <select id="getUserByVerify" resultType="com.relly.blog.entity.UserEntity">
     select
-    *,
+    *
     from user where verify = #{verify}
-
   </select>
   <sql id="limit">
         limit #{pageObject.startIndex}, #{pageObject.pageSize}

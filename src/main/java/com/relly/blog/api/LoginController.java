@@ -23,6 +23,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
@@ -63,7 +64,7 @@ public class LoginController {
         // 将用户名及密码封装到UsernamePasswordToken
         UsernamePasswordToken token = new UsernamePasswordToken(userName, password);
         //生成JwtToken
-        String jwtToken = JwtUtil.sign(userName,userEntity.getId(),userEntity.getVerify(),userEntity.getName());
+        String jwtToken = JwtUtil.sign(userName,userEntity.getId(),userEntity.getVerify());
         Map<String,Object> map = new HashMap<>(3);
         map.put("token",jwtToken);
         map.put("name",userEntity.getName());
@@ -147,16 +148,38 @@ public class LoginController {
 
     }
 
-    @PostMapping("sendMail")
-    public JsonResult sendMail(String title, String url, String email){
-        userService.sendMail(title,url,email);
-        return new JsonResult();
-    }
-
-
+    /**
+     *
+     * 校验邮件
+     * @author Relly
+     * @date 2018/12/4 8:23
+     * @param verify
+     * @return com.relly.blog.common.model.JsonResult
+     */
     @PostMapping("activation")
     public JsonResult activation(@NotNull String verify){
         userService.activation(verify);
         return new JsonResult();
+    }
+
+    /**
+     *
+     * GitHub第三方登录
+     * @author Thunder
+     * @date 2018/12/4 14:18
+     * @param code 前端请求https://github.com/login/oauth/authorize?client_id=myclient_id&scope=user:email会生成code,
+     *             根据github 申请第三方登录的时候配置的回调地址将会请求到当前接口
+     * @return com.relly.blog.common.model.JsonResult
+     */
+    @RequestMapping("githubUser")
+    public JsonResult githubUser(@NotNull String code){
+        try {
+            Map<String,Object> map = userService.githubUser(code);
+            return new JsonResult(map);
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new ServiceException("github登录失败");
+        }
+
     }
 }

@@ -8,7 +8,10 @@ import com.relly.blog.dto.UserDetailDTO;
 import com.relly.blog.dto.UserRegisterDTO;
 import com.relly.blog.entity.UserEntity;
 
+import java.io.IOException;
+import java.net.MalformedURLException;
 import java.util.List;
+import java.util.Map;
 
 public interface UserService {
 
@@ -33,4 +36,6 @@ public interface UserService {
     void sendMail(String title, String url, String email);
 
     void activation(String verify);
+
+    Map<String, Object> githubUser(String code) throws IOException;
 }
