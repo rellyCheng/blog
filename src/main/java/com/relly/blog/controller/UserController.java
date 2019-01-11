@@ -77,6 +77,14 @@ public class UserController {
         return new JsonResult();
     }
 
+    /**
+     *
+     * 获取当前用户的详细信息
+     * @author Thunder
+     * @date 2018/12/5 9:24
+     * @param request
+     * @return com.relly.blog.common.model.JsonResult
+     */
     @PostMapping("currentUser")
     public JsonResult getUserDetail(HttpServletRequest request){
         UserEntity currentUser = JwtUtil.getUser(request);
@@ -84,6 +92,13 @@ public class UserController {
         return new JsonResult(userDetailDTO);
     }
 
+    /**
+     * 更新标签
+     * @author Thunder
+     * @date 2018/12/5 9:25
+     * @param tag, request
+     * @return com.relly.blog.common.model.JsonResult
+     */
     @PostMapping("updateTags")
     public JsonResult updateTags(@RequestParam("tag") String tag,HttpServletRequest request){
         UserEntity currentUser = JwtUtil.getUser(request);
