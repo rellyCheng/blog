@@ -7,19 +7,17 @@ import com.corundumstudio.socketio.SocketIOServer;
 import com.corundumstudio.socketio.annotation.OnConnect;
 import com.corundumstudio.socketio.annotation.OnDisconnect;
 import com.corundumstudio.socketio.annotation.OnEvent;
+import com.relly.blog.entity.UserEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 @Component
 public class MessageEventHandler {
     private static SocketIOServer server;
     static ArrayList<UUID> listClient = new ArrayList<>();
-    static final int limitSeconds = 60;
+    static Map<String,UUID> mapClient = new HashMap<>();
 
     @Autowired
     public MessageEventHandler(SocketIOServer server){
@@ -34,9 +32,9 @@ public class MessageEventHandler {
      */
     @OnConnect
     public void onConnect(SocketIOClient client){
-//        System.out.println(request);
         UUID clientId = client.getSessionId();
         listClient.add(clientId);
+        mapClient.put(client.getHandshakeData().getSingleUrlParam("userId"),clientId);
         System.out.println("客户端:" + clientId + "连接成功");
     }
 
@@ -51,6 +49,7 @@ public class MessageEventHandler {
     public void onDisconnect(SocketIOClient client) {
         UUID clientId = client.getSessionId();
         listClient.remove(clientId);
+        mapClient.remove(client.getHandshakeData().getSingleUrlParam("userId").toString());
         System.out.println("客户端:" + clientId + "断开连接");
     }
 
@@ -72,15 +71,21 @@ public class MessageEventHandler {
      * @param noticeContent, url
      * @return void
      */
-    public static void sendBuyLogEvent(String noticeContent, String url) {
-        System.out.println("向客户端推送消息");
+    public static void sendBuyLogEvent(String noticeContent, String url, List<UserEntity> list) {
+        ArrayList<UUID> listClient = new ArrayList<>();
+        for (UserEntity user:list) {
+            if(mapClient.get(user.getId())!=null){
+                listClient.add(mapClient.get(user.getId()));
+            }
+        }
+        System.out.println("向客户端"+listClient+"推送消息");
         Map map = new HashMap();
         map.put("content",noticeContent);
         map.put("url",url);
         for (UUID clientId : listClient) {
             if (server.getClient(clientId) == null)
                 continue;
-                server.getClient(clientId).sendEvent("enewbuy", map, 1);
+            server.getClient(clientId).sendEvent("enewbuy", map, 1);
         }
 
     }
