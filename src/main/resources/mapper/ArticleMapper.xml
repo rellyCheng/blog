@@ -283,6 +283,62 @@
     id as articleId
     from article where id = #{articleId}
   </select>
+    <select id="getArticleMessage" resultType="com.relly.blog.dto.ArticleMessageDTO">
+     SET @crank=#{count};
+     SELECT
+        article_message.id,
+        article_message.createTime,
+        articleId,
+        parentId,
+        content AS commentContent,
+        aite,
+        `name`,
+        `user`.bgColor,
+        avatar,
+        @crank := @crank -1 as rank
+    FROM
+        article_message
+        LEFT JOIN `user` ON `user`.id = article_message.createUser
+        LEFT JOIN user_detail ON article_message.createUser = user_detail.userId
+    WHERE
+        articleId = #{articleId}
+    AND article_message.isDelete = 0
+    AND parentId IS NULL
+    order by createTime desc
+      <include refid="limit"/>
+    </select>
+  <select id="getArticleMessageChildren" resultType="com.relly.blog.dto.ArticleMessageDTO">
+
+    SELECT
+        article_message.id,
+        article_message.createTime,
+        articleId,
+        parentId,
+        content AS commentContent,
+        aite,
+        `name`,
+        `user`.bgColor,
+        avatar
+    FROM
+        article_message
+        LEFT JOIN `user` ON `user`.id = article_message.createUser
+    LEFT JOIN user_detail ON article_message.createUser = user_detail.userId
+    WHERE
+        parentId = #{parentId}
+    AND articleId = #{articleId}
+    AND article_message.isDelete = 0
+    order by createTime desc
+  </select>
+  <select id="getArticleMessageCount" resultType="java.lang.Integer">
+     SELECT
+        count(article_message.id)
+    FROM
+        article_message
+    WHERE
+        articleId = #{articleId}
+    AND isDelete = 0
+    AND parentId IS NULL
+  </select>
   <sql id="limit">
         limit #{pageObject.startIndex}, #{pageObject.pageSize}
   </sql>

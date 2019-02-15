@@ -3,6 +3,8 @@ package com.relly.blog.controller;
 import com.relly.blog.common.model.JsonResult;
 import com.relly.blog.common.model.PageResult;
 import com.relly.blog.dto.ArticleDTO;
+import com.relly.blog.dto.ArticleMessageDTO;
+import com.relly.blog.dto.UserDTO;
 import com.relly.blog.entity.UserEntity;
 import com.relly.blog.service.ArticleService;
 import com.relly.blog.utils.JwtUtil;
@@ -74,5 +76,17 @@ public class ArticleController {
     public JsonResult getArticleDetail( @NotBlank String articleId){
         ArticleDTO articleDTO = articleService.getArticleDetail(articleId);
         return new JsonResult(articleDTO);
+    }
+
+    /**
+     * 获取文章评论
+     * @param articleId
+     * @return
+     */
+    @RequestMapping("getArticleMessageDetail")
+    public JsonResult getArticleMessageDetail( @NotBlank String articleId,
+                                        @Param("pageSize")Integer pageSize,@Param("pageCurrent")Integer pageCurrent){
+        PageResult<ArticleMessageDTO> pageResult = articleService.getArticleMessageDetail(articleId,pageSize,pageCurrent);
+        return new JsonResult(pageResult);
     }
 }

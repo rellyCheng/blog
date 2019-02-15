@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 @Data
 @Builder
@@ -33,4 +34,5 @@ public class ArticleDTO {
     private Integer message;
     private Integer star;
     private String updateTime;
+    private List<ArticleMessageDTO> articleMessageDTOList;
 }

@@ -3,6 +3,7 @@ package com.relly.blog.mapper;
 import com.relly.blog.common.model.PageObject;
 import com.relly.blog.common.model.PageResult;
 import com.relly.blog.dto.ArticleDTO;
+import com.relly.blog.dto.ArticleMessageDTO;
 import com.relly.blog.entity.ArticleEntity;
 import com.relly.blog.entity.PermissionEntity;
 import org.apache.ibatis.annotations.Param;
@@ -65,4 +66,10 @@ public interface ArticleMapper {
     List<ArticleDTO> getMyArticleListMore(@Param("userId") String userId, @Param("pageObject")PageObject pageObject);
 
     ArticleDTO getArticleDetail(@Param(("articleId")) String articleId);
+
+    List<ArticleMessageDTO> getArticleMessage(@Param("articleId") String articleId,@Param("count") Integer count,@Param("pageObject") PageObject pageObject);
+
+    List<ArticleMessageDTO> getArticleMessageChildren(@Param("parentId") String parentId,@Param("articleId") String articleId);
+
+    int getArticleMessageCount(@Param("articleId") String articleId);
 }
