@@ -1,15 +1,19 @@
 package com.relly.blog.service.impl;
 
 import com.relly.blog.common.model.PageResult;
+import com.relly.blog.dto.AddArticleMessageDTO;
 import com.relly.blog.dto.ArticleDTO;
 import com.relly.blog.dto.ArticleMessageDTO;
 import com.relly.blog.dto.UserDTO;
 import com.relly.blog.entity.ArticleEntity;
+import com.relly.blog.entity.ArticleMessageEntity;
 import com.relly.blog.entity.UserEntity;
 import com.relly.blog.mapper.ArticleMapper;
+import com.relly.blog.mapper.ArticleMessageMapper;
 import com.relly.blog.service.ArticleService;
 import com.relly.blog.utils.IdUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +28,9 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Resource
     private ArticleMapper articleMapper;
+
+    @Resource
+    private ArticleMessageMapper articleMessageMapper;
 
     @Value("${file.address}")
     private String fileAddress;
@@ -74,7 +81,7 @@ public class ArticleServiceImpl implements ArticleService {
     public PageResult<ArticleMessageDTO> getArticleMessageDetail(String articleId, Integer pageSize, Integer pageCurrent) {
         int count = articleMapper.getArticleMessageCount(articleId);
         PageResult<ArticleMessageDTO> pageResult = new PageResult<>(pageCurrent, pageSize, count);
-        List<ArticleMessageDTO> articleMessageDTOList = articleMapper.getArticleMessage(articleId,count+1,pageResult);
+        List<ArticleMessageDTO> articleMessageDTOList = articleMapper.getArticleMessage(articleId,pageResult);
         List<ArticleMessageDTO> articleMessageDTOChildrenList = new ArrayList<>();
         for (ArticleMessageDTO am: articleMessageDTOList) {
             articleMessageDTOChildrenList = articleMapper.getArticleMessageChildren(am.getId(),am.getArticleId());
@@ -82,5 +89,16 @@ public class ArticleServiceImpl implements ArticleService {
         }
         pageResult.setPageData(articleMessageDTOList);
         return pageResult;
+    }
+
+    @Override
+    public void addMessageForArticle(String userId,AddArticleMessageDTO articleMessageDTO) {
+        ArticleMessageEntity articleMessageEntity = new ArticleMessageEntity();
+        BeanUtils.copyProperties(articleMessageDTO, articleMessageEntity);
+        articleMessageEntity.setCreateTime(new Date());
+        articleMessageEntity.setCreateUser(userId);
+        articleMessageEntity.setId(IdUtil.randomId());
+        articleMessageEntity.setIsDelete(false);
+        articleMessageMapper.insert(articleMessageEntity);
     }
 }

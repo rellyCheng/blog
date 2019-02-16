@@ -67,7 +67,7 @@ public interface ArticleMapper {
 
     ArticleDTO getArticleDetail(@Param(("articleId")) String articleId);
 
-    List<ArticleMessageDTO> getArticleMessage(@Param("articleId") String articleId,@Param("count") Integer count,@Param("pageObject") PageObject pageObject);
+    List<ArticleMessageDTO> getArticleMessage(@Param("articleId") String articleId,@Param("pageObject") PageObject pageObject);
 
     List<ArticleMessageDTO> getArticleMessageChildren(@Param("parentId") String parentId,@Param("articleId") String articleId);
 

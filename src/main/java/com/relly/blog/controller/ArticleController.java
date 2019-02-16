@@ -2,6 +2,7 @@ package com.relly.blog.controller;
 
 import com.relly.blog.common.model.JsonResult;
 import com.relly.blog.common.model.PageResult;
+import com.relly.blog.dto.AddArticleMessageDTO;
 import com.relly.blog.dto.ArticleDTO;
 import com.relly.blog.dto.ArticleMessageDTO;
 import com.relly.blog.dto.UserDTO;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @RestController
@@ -88,5 +90,18 @@ public class ArticleController {
                                         @Param("pageSize")Integer pageSize,@Param("pageCurrent")Integer pageCurrent){
         PageResult<ArticleMessageDTO> pageResult = articleService.getArticleMessageDetail(articleId,pageSize,pageCurrent);
         return new JsonResult(pageResult);
+    }
+
+    /**
+     * 评论文章
+     * @param request
+     * @param articleMessageDTO
+     * @return
+     */
+    @PostMapping("addMessageForArticle")
+    public JsonResult addMessageForArticle(HttpServletRequest request,@RequestBody AddArticleMessageDTO articleMessageDTO){
+        UserEntity userEntity = JwtUtil.getUser(request);
+        articleService.addMessageForArticle(userEntity.getId(),articleMessageDTO);
+        return new JsonResult();
     }
 }

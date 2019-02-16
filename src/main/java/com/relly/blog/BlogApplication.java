@@ -44,7 +44,7 @@ public class BlogApplication {
                 String token = data.getSingleUrlParam("token");
                 System.out.println("连接参数：token=" + token);
                 // 如果认证不通过会返回一个Socket.EVENT_CONNECT_ERROR事件
-                return false;
+                return true;
             }
         });
         final SocketIOServer server = new SocketIOServer(config);
