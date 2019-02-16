@@ -35,4 +35,6 @@ public class ArticleDTO {
     private Integer star;
     private String updateTime;
     private List<ArticleMessageDTO> articleMessageDTOList;
+    private String bgColor;
+    private String avatar;
 }

@@ -271,10 +271,15 @@
   </select>
   <select id="getMyArticleListMore" resultType="com.relly.blog.dto.ArticleDTO">
     select
-    *,
-    id as articleId
-    from article where isDelete = 0 and createUser=#{userId}
-    ORDER BY createTime DESC
+    article.*,
+    article.id as articleId,
+    user_detail.avatar,
+    `user`.bgcolor
+    from article
+    left join `user` on `user`.id=article.createUser
+    left join user_detail on user_detail.userId=article.createUser
+    where article.isDelete = 0 and article.createUser=#{userId}
+    ORDER BY article.createTime DESC
     <include refid="limit"/>
   </select>
   <select id="getArticleDetail" resultType="com.relly.blog.dto.ArticleDTO">
