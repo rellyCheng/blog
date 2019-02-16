@@ -98,11 +98,9 @@ public class JwtUtil {
         DecodedJWT jwt = JWT.decode(authorization);
         String username = jwt.getClaim("username").asString();
         String id = jwt.getClaim("id").asString();
-        String name = jwt.getClaim("name").asString();
         UserEntity sysUser = new UserEntity();
         sysUser.setUserName(username);
         sysUser.setId(id);
-        sysUser.setName(name);
         return sysUser;
     }
 

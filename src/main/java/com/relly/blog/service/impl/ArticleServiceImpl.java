@@ -4,7 +4,6 @@ import com.relly.blog.common.model.PageResult;
 import com.relly.blog.dto.AddArticleMessageDTO;
 import com.relly.blog.dto.ArticleDTO;
 import com.relly.blog.dto.ArticleMessageDTO;
-import com.relly.blog.dto.UserDTO;
 import com.relly.blog.entity.ArticleEntity;
 import com.relly.blog.entity.ArticleMessageEntity;
 import com.relly.blog.entity.UserEntity;
@@ -63,7 +62,7 @@ public class ArticleServiceImpl implements ArticleService {
                 .description(articleDTO.getDescription())
                 .href("总之")
                 .id(IdUtil.randomId())
-                .owner(currentUser.getName())
+                .owner(currentUser.getUserName())
                 .createUser(currentUser.getId())
                 .updateUser(currentUser.getId())
                 .build();
