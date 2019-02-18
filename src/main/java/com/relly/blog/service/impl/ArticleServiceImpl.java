@@ -63,7 +63,7 @@ public class ArticleServiceImpl implements ArticleService {
                 .description(articleDTO.getDescription())
                 .href("总之")
                 .id(IdUtil.randomId())
-                .owner(currentUser.getName())
+                .ownerName(currentUser.getName())
                 .createUser(currentUser.getId())
                 .updateUser(currentUser.getId())
                 .build();
@@ -94,11 +94,18 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     public void addMessageForArticle(String userId,AddArticleMessageDTO articleMessageDTO) {
         ArticleMessageEntity articleMessageEntity = new ArticleMessageEntity();
+        if (articleMessageDTO.getAite()==null){
+            ArticleEntity articleEntity = articleMapper.selectByPrimaryKey(articleMessageDTO.getArticleId());
+            articleMessageDTO.setAite(articleEntity.getCreateUser());
+        }
         BeanUtils.copyProperties(articleMessageDTO, articleMessageEntity);
         articleMessageEntity.setCreateTime(new Date());
         articleMessageEntity.setCreateUser(userId);
         articleMessageEntity.setId(IdUtil.randomId());
         articleMessageEntity.setIsDelete(false);
         articleMessageMapper.insert(articleMessageEntity);
+
+        //消息通知给被评论的人
+
     }
 }

@@ -8,6 +8,7 @@ import com.corundumstudio.socketio.annotation.OnConnect;
 import com.corundumstudio.socketio.annotation.OnDisconnect;
 import com.corundumstudio.socketio.annotation.OnEvent;
 import com.relly.blog.entity.UserEntity;
+import com.relly.blog.utils.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -34,7 +35,8 @@ public class MessageEventHandler {
     public void onConnect(SocketIOClient client){
         UUID clientId = client.getSessionId();
         listClient.add(clientId);
-        mapClient.put(client.getHandshakeData().getSingleUrlParam("userId"),clientId);
+        String userId = JwtUtil.getUserId(client.getHandshakeData().getSingleUrlParam("token"));
+        mapClient.put(userId,clientId);
         System.out.println("客户端:" + clientId + "连接成功");
     }
 
@@ -49,7 +51,8 @@ public class MessageEventHandler {
     public void onDisconnect(SocketIOClient client) {
         UUID clientId = client.getSessionId();
         listClient.remove(clientId);
-        mapClient.remove(client.getHandshakeData().getSingleUrlParam("userId").toString());
+        String userId = JwtUtil.getUserId(client.getHandshakeData().getSingleUrlParam("token"));
+        mapClient.remove(userId);
         System.out.println("客户端:" + clientId + "断开连接");
     }
 
@@ -81,7 +84,6 @@ public class MessageEventHandler {
         System.out.println("向客户端"+listClient+"推送消息");
         Map map = new HashMap();
         map.put("content",noticeContent);
-        map.put("url",url);
         for (UUID clientId : listClient) {
             if (server.getClient(clientId) == null)
                 continue;
