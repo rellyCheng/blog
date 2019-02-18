@@ -1,23 +1,20 @@
 package com.relly.blog.service.impl;
 
 import com.relly.blog.common.model.PageResult;
-import com.relly.blog.dto.AddArticleMessageDTO;
-import com.relly.blog.dto.ArticleDTO;
-import com.relly.blog.dto.ArticleMessageDTO;
-import com.relly.blog.dto.UserDTO;
-import com.relly.blog.entity.ArticleEntity;
-import com.relly.blog.entity.ArticleMessageEntity;
-import com.relly.blog.entity.UserEntity;
-import com.relly.blog.mapper.ArticleMapper;
-import com.relly.blog.mapper.ArticleMessageMapper;
+import com.relly.blog.dto.*;
+import com.relly.blog.entity.*;
+import com.relly.blog.mapper.*;
 import com.relly.blog.service.ArticleService;
 import com.relly.blog.utils.IdUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -31,6 +28,12 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Resource
     private ArticleMessageMapper articleMessageMapper;
+    @Resource
+    private NoticeMapper noticeMapper;
+    @Resource
+    private UserMapper userMapper;
+    @Resource
+    private UserDetailMapper userDetailMapper;
 
     @Value("${file.address}")
     private String fileAddress;
@@ -92,20 +95,42 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
+    @Transactional
     public void addMessageForArticle(String userId,AddArticleMessageDTO articleMessageDTO) {
         ArticleMessageEntity articleMessageEntity = new ArticleMessageEntity();
+        int type = 0;//0评论别人的评论 , 1直接评论文章
+        ArticleEntity articleEntity = articleMapper.selectByPrimaryKey(articleMessageDTO.getArticleId());
         if (articleMessageDTO.getAite()==null){
-            ArticleEntity articleEntity = articleMapper.selectByPrimaryKey(articleMessageDTO.getArticleId());
+            //评论文章
+            type = 1;
             articleMessageDTO.setAite(articleEntity.getCreateUser());
         }
         BeanUtils.copyProperties(articleMessageDTO, articleMessageEntity);
-        articleMessageEntity.setCreateTime(new Date());
+        Date commentDate = new Date();
+        articleMessageEntity.setCreateTime(commentDate);
         articleMessageEntity.setCreateUser(userId);
         articleMessageEntity.setId(IdUtil.randomId());
         articleMessageEntity.setIsDelete(false);
         articleMessageMapper.insert(articleMessageEntity);
 
         //消息通知给被评论的人
+        NoticeEntity noticeEntity = new NoticeEntity();
+        noticeEntity.setDescription(articleMessageDTO.getContent());
 
+        UserEntity userEntity = userMapper.selectByPrimaryKey(userId);
+        if(type==1){
+            noticeEntity.setTitle(userEntity.getName()+" 评论了你的文章《"+articleEntity.getTitle()+"》");
+        }
+        if(type==0){
+            noticeEntity.setTitle(userEntity.getName()+" 回复了你");
+        }
+        noticeEntity.setAvatar("https://gw.alipayobjects.com/zos/rmsportal/ThXAXghbEsBCCSDihZxY.png");
+        noticeEntity.setDatetime(commentDate);
+        noticeEntity.setSendId(userId);
+        noticeEntity.setUserId(articleMessageDTO.getAite());
+        noticeEntity.setId(IdUtil.randomId());
+        noticeEntity.setIsRead(0);
+        noticeEntity.setType(NoticeTypeEnum.MESSAGE.getState());
+        noticeMapper.insertSelective(noticeEntity);
     }
 }

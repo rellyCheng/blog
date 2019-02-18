@@ -94,6 +94,9 @@
       <if test="userId != null">
         userId,
       </if>
+      <if test="sendId != null">
+        sendId,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -125,6 +128,9 @@
       </if>
       <if test="userId != null">
         #{userId,jdbcType=CHAR},
+      </if>
+      <if test="sendId != null">
+        #{sendId,jdbcType=CHAR},
       </if>
     </trim>
   </insert>

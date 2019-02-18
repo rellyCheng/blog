@@ -8,10 +8,19 @@ package com.relly.blog.dto;
  */
 public enum NoticeTypeEnum {
 
-    MESSAGE(0, "message"),
+    /**
+     * 消息
+     */
+    MESSAGE(1, "message"),
+    /**
+     * 通知
+     */
 
-    NOTIFICATION(1, "notification"),
+    NOTIFICATION(0, "notification"),
 
+    /**
+     * 代办
+     */
     EVENT(2,"event");
 
     private Integer state;

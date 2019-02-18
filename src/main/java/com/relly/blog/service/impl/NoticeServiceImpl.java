@@ -43,7 +43,9 @@ public class NoticeServiceImpl implements NoticeService {
         for (NoticeDTO noticeDTO:list) {
             if (noticeDTO.getSendId()!=null){
                 userDetailEntity = userDetailMapper.selectByUserId(noticeDTO.getSendId());
-                noticeDTO.setAvatar(userDetailEntity.getAvatar());
+                if (userDetailEntity.getAvatar()!=null){
+                    noticeDTO.setAvatar(userDetailEntity.getAvatar());
+                }
             }
             if (noticeDTO.getType().equals(NoticeTypeEnum.EVENT.getMessage())){
                 //当前时间在开始时间之前
