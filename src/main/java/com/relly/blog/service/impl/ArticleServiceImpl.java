@@ -1,5 +1,6 @@
 package com.relly.blog.service.impl;
 
+import com.relly.blog.common.config.MessageEventHandler;
 import com.relly.blog.common.model.PageResult;
 import com.relly.blog.dto.*;
 import com.relly.blog.entity.*;
@@ -15,9 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -124,6 +123,8 @@ public class ArticleServiceImpl implements ArticleService {
         if(type==0){
             noticeEntity.setTitle(userEntity.getName()+" 回复了你");
         }
+
+        //保存通知
         noticeEntity.setAvatar("https://gw.alipayobjects.com/zos/rmsportal/ThXAXghbEsBCCSDihZxY.png");
         noticeEntity.setDatetime(commentDate);
         noticeEntity.setSendId(userId);
@@ -132,5 +133,13 @@ public class ArticleServiceImpl implements ArticleService {
         noticeEntity.setIsRead(0);
         noticeEntity.setType(NoticeTypeEnum.MESSAGE.getState());
         noticeMapper.insertSelective(noticeEntity);
+
+        //推送消息
+        Map<String,Object> noticeContentMap = new HashMap<>();
+        noticeContentMap.put("noticeTitle",noticeEntity.getTitle());
+        noticeContentMap.put("noticeContent",articleMessageDTO.getContent());
+        List<String> list = new ArrayList<>();
+        list.add(userId);
+        MessageEventHandler.sendBuyLogEvent(noticeContentMap,list);
     }
 }

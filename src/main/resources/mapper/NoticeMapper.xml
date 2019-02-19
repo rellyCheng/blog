@@ -201,4 +201,7 @@
     SELECT COUNT(*)
     FROM notice where isRead = 0 AND userId = #{userId}
   </select>
+  <select id="getNoticeListByUserIdAndType" resultType="com.relly.blog.entity.NoticeEntity">
+    select * from notice where isRead = 0 and userId = #{userId} and type=#{type}
+  </select>
 </mapper>

@@ -81,4 +81,16 @@ public class NoticeServiceImpl implements NoticeService {
         }
         return list;
     }
+
+    @Override
+    public void clearNotices(String userId, int type) {
+        //查询用户未读的notice
+       List<NoticeEntity> noticeEntityList =  noticeMapper.getNoticeListByUserIdAndType(userId,type);
+       NoticeEntity notice = new NoticeEntity();
+       for (NoticeEntity noticeEntity:noticeEntityList){
+           notice.setId(noticeEntity.getId());
+           notice.setIsRead(1);
+           noticeMapper.updateByPrimaryKeySelective(notice);
+       }
+    }
 }
