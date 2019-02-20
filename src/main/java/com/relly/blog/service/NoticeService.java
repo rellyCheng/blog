@@ -9,4 +9,6 @@ public interface NoticeService {
     void addNotice(NoticeEntity noticeEntity);
 
     List<NoticeDTO> getNoticeList(String userId);
+
+    void clearNotices(String userId, int type);
 }

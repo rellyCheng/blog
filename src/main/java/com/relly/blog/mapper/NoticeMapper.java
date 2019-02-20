@@ -2,6 +2,7 @@ package com.relly.blog.mapper;
 
 import com.relly.blog.dto.NoticeDTO;
 import com.relly.blog.entity.NoticeEntity;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -57,4 +58,6 @@ public interface NoticeMapper {
     List<NoticeDTO> getNoticeList(String userId);
 
     int getNoticeCountByUserId(String userId);
+
+    List<NoticeEntity> getNoticeListByUserIdAndType(@Param("userId") String userId, @Param("type") int type);
 }

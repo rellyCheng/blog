@@ -19,6 +19,10 @@ public class ArticleMessageDTO {
     private String aite;
     private Date createTime;
     private String name;
+    /**
+     * 被评论人的Id
+     */
+    private String userId;
     private String commentContent;
     private String bgColor;
     private String avatar;

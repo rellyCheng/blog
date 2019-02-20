@@ -77,6 +77,7 @@ public class LoginController {
         String jwtToken = JwtUtil.sign(userName,userEntity.getId(),userEntity.getVerify());
         Map<String,Object> map = new HashMap<>(3);
         map.put("token",jwtToken);
+        map.put("userId",userEntity.getId());
         map.put("name",userEntity.getName());
         List<String> authList = permissionService.getPermissionListByUserId(userEntity.getId());
         authList.add("user");

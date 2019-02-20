@@ -12,10 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api/upload")
@@ -35,6 +32,7 @@ public class UploadController {
      */
     @PostMapping("/singleUpload")
     public JsonResult upload(@RequestParam("file") MultipartFile file, HttpServletRequest request) {
+        System.out.println(request.getServletContext().getRealPath("/"));
         if (file.isEmpty()) {
             throw new ServiceException("上传文件失败,请选择文件");
         }
@@ -44,7 +42,7 @@ public class UploadController {
         int last=fileName.length();
         String back = fileName.substring(begin,last);
         //加密文件名称
-        Map<String,String> map = MD5salt.MD5File(fileName);
+        Map<String,String> map = MD5salt.MD5File(fileName+new Date());
         fileName = map.get("md5file")+back;
         String filePath = request.getSession().getServletContext().getRealPath("uploadFile/");
         try {
@@ -54,7 +52,7 @@ public class UploadController {
         }
         Map<String,Object> fileMap = new HashMap<>();
         fileMap.put("originName",file.getOriginalFilename());
-        fileMap.put("filePath",filePath+fileName);
+        fileMap.put("filePath","/uploadFile/"+fileName);
         return new JsonResult(fileMap);
     }
 
@@ -84,7 +82,7 @@ public class UploadController {
                 throw new ServiceException(""+e+"");
             }
             UploadFile uploadFile = UploadFile.builder()
-                    .filePath(filePath+fileName)
+                    .filePath("/uploadFile/"+fileName)
                     .originName(file.getOriginalFilename())
                     .build();
             fileList.add(uploadFile);

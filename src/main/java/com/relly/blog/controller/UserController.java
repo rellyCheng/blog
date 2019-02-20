@@ -27,8 +27,6 @@ public class UserController {
     @Resource
     private UserService userService;
 
-    @Value("${file.address}")
-    private String fileAddress;
 
     /**
      *
@@ -70,7 +68,7 @@ public class UserController {
     public JsonResult updateUserDetail(@RequestBody @Validated UserDetailDTO userDetailDTO, HttpServletRequest request){
         UserEntity currentUser = JwtUtil.getUser(request);
         if(userDetailDTO.getAvatar()!=null){
-            userDetailDTO.setAvatar(fileAddress+userDetailDTO.getAvatar());
+            userDetailDTO.setAvatar(userDetailDTO.getAvatar());
         }
         userDetailDTO.setUserId(currentUser.getId());
         userService.updateUserDetail(userDetailDTO);

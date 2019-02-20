@@ -16,7 +16,7 @@ public class JwtUtil {
     private static final long EXPIRE_TIME = 6000*60*1000;
 
     /**
-     * 校验token是否正确
+     * 校验token是否正确 校验密码更改的情况
      * @param token 密钥
      * @param id 用户的id
      * @return 是否正确
@@ -28,6 +28,27 @@ public class JwtUtil {
                     .withClaim("username", username)
                     .withClaim("id", id)
                     .withClaim("verify", verify)
+                    .build();
+            DecodedJWT jwt = verifier.verify(token);
+            return true;
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            System.out.println(exception.getMessage());
+            return false;
+        }
+    }
+    /**
+     * 校验token是否正确 不校验密码更改的情况
+     * @param token 密钥
+     * @return 是否正确
+     */
+    public static boolean verifyNoPwd(String token) {
+        try {
+            Algorithm algorithm = Algorithm.HMAC256(getUserId(token));
+            JWTVerifier verifier = JWT.require(algorithm)
+                    .withClaim("username", getUsername(token))
+                    .withClaim("id", getUserId(token))
+                    .withClaim("verify", getVerify(token))
                     .build();
             DecodedJWT jwt = verifier.verify(token);
             return true;
@@ -53,12 +74,24 @@ public class JwtUtil {
 
     /**
      * 获得token中的信息无需secret解密也能获得
-     * @return token中包含的用户名
+     * @return token中包含的用户Id
      */
     public static String getUserId(String token) {
         try {
             DecodedJWT jwt = JWT.decode(token);
             return jwt.getClaim("id").asString();
+        } catch (JWTDecodeException e) {
+            return null;
+        }
+    }
+    /**
+     * 获得token中的信息无需secret解密也能获得
+     * @return token中包含的用户verify
+     */
+    public static String getVerify(String token) {
+        try {
+            DecodedJWT jwt = JWT.decode(token);
+            return jwt.getClaim("verify").asString();
         } catch (JWTDecodeException e) {
             return null;
         }

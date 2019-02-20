@@ -5,6 +5,8 @@ import com.corundumstudio.socketio.AuthorizationListener;
 import com.corundumstudio.socketio.HandshakeData;
 import com.corundumstudio.socketio.SocketIOServer;
 import com.corundumstudio.socketio.annotation.SpringAnnotationScanner;
+import com.relly.blog.common.config.MessageEventHandler;
+import com.relly.blog.utils.JwtUtil;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
@@ -34,7 +36,7 @@ public class BlogApplication {
     @Bean
     public SocketIOServer socketIOServer() {
         com.corundumstudio.socketio.Configuration config = new com.corundumstudio.socketio.Configuration();
-        config.setHostname("localhost");
+        config.setHostname(serverAddress);
         config.setPort(socketPort);
         config.setAuthorizationListener(new AuthorizationListener() {
             @Override
@@ -43,7 +45,7 @@ public class BlogApplication {
                 String token = data.getSingleUrlParam("token");
                 System.out.println("连接参数：token=" + token);
                 // 如果认证不通过会返回一个Socket.EVENT_CONNECT_ERROR事件
-                return true;
+                return JwtUtil.verifyNoPwd(token);
             }
         });
         final SocketIOServer server = new SocketIOServer(config);

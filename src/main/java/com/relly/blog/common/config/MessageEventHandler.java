@@ -8,6 +8,7 @@ import com.corundumstudio.socketio.annotation.OnConnect;
 import com.corundumstudio.socketio.annotation.OnDisconnect;
 import com.corundumstudio.socketio.annotation.OnEvent;
 import com.relly.blog.entity.UserEntity;
+import com.relly.blog.utils.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -34,7 +35,8 @@ public class MessageEventHandler {
     public void onConnect(SocketIOClient client){
         UUID clientId = client.getSessionId();
         listClient.add(clientId);
-        mapClient.put(client.getHandshakeData().getSingleUrlParam("userId"),clientId);
+        String userId = JwtUtil.getUserId(client.getHandshakeData().getSingleUrlParam("token"));
+        mapClient.put(userId,clientId);
         System.out.println("客户端:" + clientId + "连接成功");
     }
 
@@ -49,7 +51,8 @@ public class MessageEventHandler {
     public void onDisconnect(SocketIOClient client) {
         UUID clientId = client.getSessionId();
         listClient.remove(clientId);
-        mapClient.remove(client.getHandshakeData().getSingleUrlParam("userId").toString());
+        String userId = JwtUtil.getUserId(client.getHandshakeData().getSingleUrlParam("token"));
+        mapClient.remove(userId);
         System.out.println("客户端:" + clientId + "断开连接");
     }
 
@@ -68,24 +71,21 @@ public class MessageEventHandler {
      * 对应的链接
      * @author Thunder
      * @date 2018/9/19 10:07
-     * @param noticeContent, url
+     * @param noticeContentMap, url
      * @return void
      */
-    public static void sendBuyLogEvent(String noticeContent, String url, List<UserEntity> list) {
+    public static void sendBuyLogEvent(Map<String,Object> noticeContentMap, List<String> userIdList) {
         ArrayList<UUID> listClient = new ArrayList<>();
-        for (UserEntity user:list) {
-            if(mapClient.get(user.getId())!=null){
-                listClient.add(mapClient.get(user.getId()));
+        for (String userId:userIdList) {
+            if(mapClient.get(userId)!=null){
+                listClient.add(mapClient.get(userId));
             }
         }
         System.out.println("向客户端"+listClient+"推送消息");
-        Map map = new HashMap();
-        map.put("content",noticeContent);
-        map.put("url",url);
         for (UUID clientId : listClient) {
             if (server.getClient(clientId) == null)
                 continue;
-            server.getClient(clientId).sendEvent("enewbuy", map, 1);
+            server.getClient(clientId).sendEvent("enewbuy", noticeContentMap, 1);
         }
 
     }

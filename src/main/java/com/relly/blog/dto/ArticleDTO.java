@@ -28,13 +28,14 @@ public class ArticleDTO {
     @NotBlank
     private String description;
     private String href;
-    private String owner;
+    private String ownerName;
     private String members;
-    private Integer like;
+    private Integer likeNum;
     private Integer message;
     private Integer star;
     private String updateTime;
     private List<ArticleMessageDTO> articleMessageDTOList;
     private String bgColor;
     private String avatar;
+    private String articleTypeStr;
 }

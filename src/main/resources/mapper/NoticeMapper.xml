@@ -94,6 +94,9 @@
       <if test="userId != null">
         userId,
       </if>
+      <if test="sendId != null">
+        sendId,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -125,6 +128,9 @@
       </if>
       <if test="userId != null">
         #{userId,jdbcType=CHAR},
+      </if>
+      <if test="sendId != null">
+        #{sendId,jdbcType=CHAR},
       </if>
     </trim>
   </insert>
@@ -194,5 +200,8 @@
   <select id="getNoticeCountByUserId" resultType="java.lang.Integer">
     SELECT COUNT(*)
     FROM notice where isRead = 0 AND userId = #{userId}
+  </select>
+  <select id="getNoticeListByUserIdAndType" resultType="com.relly.blog.entity.NoticeEntity">
+    select * from notice where isRead = 0 and userId = #{userId} and type=#{type}
   </select>
 </mapper>

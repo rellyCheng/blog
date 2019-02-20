@@ -43,7 +43,9 @@ public class NoticeServiceImpl implements NoticeService {
         for (NoticeDTO noticeDTO:list) {
             if (noticeDTO.getSendId()!=null){
                 userDetailEntity = userDetailMapper.selectByUserId(noticeDTO.getSendId());
-                noticeDTO.setAvatar(userDetailEntity.getAvatar());
+                if (userDetailEntity.getAvatar()!=null){
+                    noticeDTO.setAvatar(userDetailEntity.getAvatar());
+                }
             }
             if (noticeDTO.getType().equals(NoticeTypeEnum.EVENT.getMessage())){
                 //当前时间在开始时间之前
@@ -78,5 +80,17 @@ public class NoticeServiceImpl implements NoticeService {
             }
         }
         return list;
+    }
+
+    @Override
+    public void clearNotices(String userId, int type) {
+        //查询用户未读的notice
+       List<NoticeEntity> noticeEntityList =  noticeMapper.getNoticeListByUserIdAndType(userId,type);
+       NoticeEntity notice = new NoticeEntity();
+       for (NoticeEntity noticeEntity:noticeEntityList){
+           notice.setId(noticeEntity.getId());
+           notice.setIsRead(1);
+           noticeMapper.updateByPrimaryKeySelective(notice);
+       }
     }
 }
