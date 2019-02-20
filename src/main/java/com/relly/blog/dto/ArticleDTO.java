@@ -37,4 +37,5 @@ public class ArticleDTO {
     private List<ArticleMessageDTO> articleMessageDTOList;
     private String bgColor;
     private String avatar;
+    private String articleTypeStr;
 }

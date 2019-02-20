@@ -63,11 +63,6 @@ public class WebMvcConfig implements WebMvcConfigurer {
     }
 
     @Override
-    public void addCorsMappings(CorsRegistry corsRegistry) {
-
-    }
-
-    @Override
     public void addViewControllers(ViewControllerRegistry viewControllerRegistry) {
 
     }
@@ -144,5 +139,19 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Override
     public MessageCodesResolver getMessageCodesResolver() {
         return null;
+    }
+
+    /**
+     * 添加全局跨域支持
+     *
+     * @param registry
+     */
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**")
+                .allowedOrigins("*")
+                .allowCredentials(true)
+                .allowedMethods("GET", "POST", "DELETE", "PUT")
+                .maxAge(3600);
     }
 }

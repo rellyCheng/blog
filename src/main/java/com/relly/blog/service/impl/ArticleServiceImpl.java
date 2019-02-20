@@ -9,13 +9,10 @@ import com.relly.blog.service.ArticleService;
 import com.relly.blog.utils.IdUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Service
@@ -34,8 +31,7 @@ public class ArticleServiceImpl implements ArticleService {
     @Resource
     private UserDetailMapper userDetailMapper;
 
-    @Value("${file.address}")
-    private String fileAddress;
+
 
     @Override
     public List<ArticleDTO> getArticleListByUser(String userId) {
@@ -49,16 +45,25 @@ public class ArticleServiceImpl implements ArticleService {
         PageResult<ArticleDTO> pageResult = new PageResult<>(pageCurrent, 1, rowCount);
 
         List<ArticleDTO> list = articleMapper.getMyArticleListMore(userId,pageResult);
+        for(ArticleDTO articleDTO : list){
+            loopArticleType: for(ArticleTypeEnum articleTypeEnum : ArticleTypeEnum.values()){
+                if(articleTypeEnum.getKey().toString().equals(articleDTO.getType())){
+                    articleDTO.setArticleTypeStr(articleTypeEnum.getValue());
+                    break loopArticleType;
+                }
+            }
+        }
         pageResult.setPageData(list);
         return pageResult;
     }
 
     @Override
     public void save(UserEntity currentUser, ArticleDTO articleDTO) {
+        currentUser = userMapper.selectByPrimaryKey(currentUser.getId());
         ArticleEntity articleEntity = ArticleEntity.builder()
                 .content(articleDTO.getContent())
                 .title(articleDTO.getTitle())
-                .cover(fileAddress+articleDTO.getCover())
+                .cover(articleDTO.getCover())
                 .createTime(new Date())
                 .type(articleDTO.getType())
                 .isPublic(articleDTO.getIsPublic()?0:1)
@@ -67,7 +72,6 @@ public class ArticleServiceImpl implements ArticleService {
                 .id(IdUtil.randomId())
                 .ownerName(currentUser.getName())
                 .createUser(currentUser.getId())
-                .updateUser(currentUser.getId())
                 .build();
         articleMapper.insertSelective(articleEntity);
 
