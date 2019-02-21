@@ -40,4 +40,14 @@
       </if>
     </trim>
   </insert>
+  <delete id="delRecord" parameterType="java.lang.String">
+    delete from article_star
+    where articleId = #{articleId,jdbcType=CHAR}
+  </delete>
+  <select id="getStarNumByArticleId" resultType="java.lang.Integer">
+      select count(articleId) from article_star where articleId = #{articleId}
+    </select>
+  <select id="getStarNumByArticleIdAndUserId" resultType="java.lang.Integer">
+    select count(articleId) from article_star where articleId = #{articleId} and userId = #{userId}
+  </select>
 </mapper>

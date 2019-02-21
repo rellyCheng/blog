@@ -31,21 +31,33 @@ public class ArticleServiceImpl implements ArticleService {
     @Resource
     private UserDetailMapper userDetailMapper;
 
+    @Resource
+    private ArticleStarMapper articleStarMapper;
+
+
+
 
 
     @Override
     public List<ArticleDTO> getArticleListByUser(String userId) {
         List<ArticleDTO> list = articleMapper.getArticleListByUser(userId);
+        list = handleArticleDTOList(list,userId);
         return list;
     }
 
-    @Override
-    public PageResult getMyArticleListMore(String userId, int pageCurrent) {
-        int rowCount = articleMapper.gettMyArticleListCount(userId);
-        PageResult<ArticleDTO> pageResult = new PageResult<>(pageCurrent, 1, rowCount);
-
-        List<ArticleDTO> list = articleMapper.getMyArticleListMore(userId,pageResult);
+    public List<ArticleDTO> handleArticleDTOList(List<ArticleDTO> list,String userId){
+        int starNum;
+        int isStarNum;
+        int messageNum;
         for(ArticleDTO articleDTO : list){
+            starNum = articleStarMapper.getStarNumByArticleId(articleDTO.getArticleId());
+            articleDTO.setStarNum(starNum);
+
+            isStarNum = articleStarMapper.getStarNumByArticleIdAndUserId(articleDTO.getArticleId(),userId);
+            articleDTO.setIsStar(isStarNum>0);
+
+            messageNum = articleMessageMapper.getMessageNumByArticleId(articleDTO.getArticleId());
+            articleDTO.setMessageNum(messageNum);
             loopArticleType: for(ArticleTypeEnum articleTypeEnum : ArticleTypeEnum.values()){
                 if(articleTypeEnum.getKey().toString().equals(articleDTO.getType())){
                     articleDTO.setArticleTypeStr(articleTypeEnum.getValue());
@@ -53,6 +65,17 @@ public class ArticleServiceImpl implements ArticleService {
                 }
             }
         }
+        return list;
+    }
+
+
+    @Override
+    public PageResult getMyArticleListMore(String userId, int pageCurrent) {
+        int rowCount = articleMapper.gettMyArticleListCount(userId);
+        PageResult<ArticleDTO> pageResult = new PageResult<>(pageCurrent, 1, rowCount);
+
+        List<ArticleDTO> list = articleMapper.getMyArticleListMore(userId,pageResult);
+        list = handleArticleDTOList(list,userId);
         pageResult.setPageData(list);
         return pageResult;
     }
@@ -145,5 +168,33 @@ public class ArticleServiceImpl implements ArticleService {
         List<String> list = new ArrayList<>();
         list.add(userId);
         MessageEventHandler.sendBuyLogEvent(noticeContentMap,list);
+    }
+
+    @Override
+    public void likeArticle(String articleId) {
+        ArticleEntity articleEntity = articleMapper.selectByPrimaryKey(articleId);
+        Integer likeNum = articleEntity.getLikeNum();
+        if(articleEntity.getLikeNum()==null){
+            likeNum = 0;
+        }
+        articleEntity.setLikeNum(likeNum+1);
+        articleMapper.updateByPrimaryKeySelective(articleEntity);
+    }
+
+    @Override
+    public String starArticle(String userId,String articleId) {
+        Integer isStarNum = articleStarMapper.getStarNumByArticleIdAndUserId(articleId,userId);
+        if(isStarNum>0){
+            articleStarMapper.delRecord(articleId);
+            return ArticleStarEnum.CANCLE.getValue();
+        }else {
+            ArticleStarEntity articleStarEntity = new ArticleStarEntity();
+            articleStarEntity.setArticleId(articleId);
+            articleStarEntity.setUserId(userId);
+            articleStarMapper.insert(articleStarEntity);
+            return ArticleStarEnum.STAR.getValue();
+        }
+
+
     }
 }

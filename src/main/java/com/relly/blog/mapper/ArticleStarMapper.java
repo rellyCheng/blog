@@ -1,6 +1,7 @@
 package com.relly.blog.mapper;
 
 import com.relly.blog.entity.ArticleStarEntity;
+import org.apache.ibatis.annotations.Param;
 
 public interface ArticleStarMapper {
     /**
@@ -18,4 +19,10 @@ public interface ArticleStarMapper {
      * @mbg.generated
      */
     int insertSelective(ArticleStarEntity record);
+
+    int getStarNumByArticleId(@Param("articleId") String articleId);
+
+    int getStarNumByArticleIdAndUserId(@Param("articleId")String articleId, @Param("userId")String userId);
+
+    void delRecord(@Param("articleId") String articleId);
 }

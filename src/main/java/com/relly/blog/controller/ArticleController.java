@@ -11,10 +11,7 @@ import com.relly.blog.service.ArticleService;
 import com.relly.blog.utils.JwtUtil;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -104,4 +101,27 @@ public class ArticleController {
         articleService.addMessageForArticle(userEntity.getId(),articleMessageDTO);
         return new JsonResult();
     }
+    /**
+     * 点赞文章
+     * @param articleId
+     * @return
+     */
+    @PostMapping("likeArticle")
+    public JsonResult likeArticle(@RequestParam("articleId") String articleId){
+        articleService.likeArticle(articleId);
+        return new JsonResult();
+    }
+
+    /**
+     * 收藏文章
+     * @param articleId
+     * @return
+     */
+    @PostMapping("starArticle")
+    public JsonResult starArticle(HttpServletRequest request,@RequestParam("articleId") String articleId){
+        UserEntity userEntity = JwtUtil.getUser(request);
+        String result = articleService.starArticle(userEntity.getId(),articleId);
+        return new JsonResult(result);
+    }
+
 }
