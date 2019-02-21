@@ -289,7 +289,7 @@
     from article where id = #{articleId}
   </select>
     <select id="getArticleMessage" resultType="com.relly.blog.dto.ArticleMessageDTO">
-     SET @crank=0;
+
      SELECT
         article_message.id,
         article_message.createTime,
@@ -301,7 +301,7 @@
         `user`.id AS userId,
         `user`.bgColor,
         avatar,
-        @crank := @crank +1 as rank
+        ROW_NUMBER() OVER(order by createTime ASC) as rankNum
     FROM
         article_message
         LEFT JOIN `user` ON `user`.id = article_message.createUser

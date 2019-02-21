@@ -26,6 +26,6 @@ public class ArticleMessageDTO {
     private String commentContent;
     private String bgColor;
     private String avatar;
-    private Integer rank;
+    private Integer rankNum;
     private List<ArticleMessageDTO> children;
 }

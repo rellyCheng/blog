@@ -7,7 +7,6 @@ import com.corundumstudio.socketio.SocketIOServer;
 import com.corundumstudio.socketio.annotation.OnConnect;
 import com.corundumstudio.socketio.annotation.OnDisconnect;
 import com.corundumstudio.socketio.annotation.OnEvent;
-import com.relly.blog.entity.UserEntity;
 import com.relly.blog.utils.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -76,17 +75,18 @@ public class MessageEventHandler {
      */
     public static void sendBuyLogEvent(Map<String,Object> noticeContentMap, List<String> userIdList) {
         ArrayList<UUID> listClient = new ArrayList<>();
-        for (String userId:userIdList) {
-            if(mapClient.get(userId)!=null){
-                listClient.add(mapClient.get(userId));
+        if (!listClient.isEmpty()){
+            for (String userId:userIdList) {
+                if(mapClient.get(userId)!=null){
+                    listClient.add(mapClient.get(userId));
+                }
+            }
+            System.out.println("向客户端"+listClient+"推送消息");
+            for (UUID clientId : listClient) {
+                if (server.getClient(clientId) == null)
+                    continue;
+                server.getClient(clientId).sendEvent("enewbuy", noticeContentMap, 1);
             }
         }
-        System.out.println("向客户端"+listClient+"推送消息");
-        for (UUID clientId : listClient) {
-            if (server.getClient(clientId) == null)
-                continue;
-            server.getClient(clientId).sendEvent("enewbuy", noticeContentMap, 1);
-        }
-
     }
 }
