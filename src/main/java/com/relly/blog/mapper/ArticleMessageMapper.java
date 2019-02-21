@@ -1,6 +1,7 @@
 package com.relly.blog.mapper;
 
 import com.relly.blog.entity.ArticleMessageEntity;
+import org.apache.ibatis.annotations.Param;
 
 public interface ArticleMessageMapper {
     /**
@@ -50,4 +51,6 @@ public interface ArticleMessageMapper {
      * @mbg.generated
      */
     int updateByPrimaryKey(ArticleMessageEntity record);
+
+    int getMessageNumByArticleId(@Param("articleId") String articleId);
 }

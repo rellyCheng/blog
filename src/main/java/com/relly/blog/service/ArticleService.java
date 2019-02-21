@@ -22,4 +22,8 @@ public interface ArticleService {
     PageResult<ArticleMessageDTO> getArticleMessageDetail(String articleId, Integer pageSize, Integer pageCurrent);
 
     void addMessageForArticle(String userId,AddArticleMessageDTO articleMessageDTO);
+
+    void likeArticle(String articleId);
+
+    String starArticle(String userId,String articleId);
 }
