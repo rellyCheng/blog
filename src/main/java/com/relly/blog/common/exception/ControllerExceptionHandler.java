@@ -83,14 +83,11 @@ public class ControllerExceptionHandler {
     }
 
     private Object handResult(HttpServletRequest request, HttpServletResponse response, String message, String state) {
-        if (HttpUtil.isAjaxRequest(request)) {
             JsonResult jsonResult = new JsonResult();
             jsonResult.setMessage(message);
             jsonResult.setState(state);
             HttpUtil.responseUseJsonType(response, jsonResult);
             return null;
-        }
-        return getModelAndView(message);
     }
 
     /**
