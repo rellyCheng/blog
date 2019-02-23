@@ -9,14 +9,16 @@ import com.qiniu.storage.UploadManager;
 import com.qiniu.util.Auth;
 import com.relly.blog.common.exception.ServiceException;
 import com.relly.blog.common.model.JsonResult;
+import net.coobird.thumbnailator.Thumbnails;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.imageio.ImageIO;
 import javax.validation.constraints.NotNull;
-import java.io.ByteArrayInputStream;
-import java.io.File;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Date;
@@ -46,7 +48,7 @@ public class QiNiuController {
     }
 
     /**
-     * 上传方法1
+     * file 类型上传图片
      * @param file 文件  （也可以是字节数组、或者File对象）
      * key 上传到七牛上的文件的名称  （同一个空间下，名称【key】是唯一的）
      */
@@ -67,6 +69,54 @@ public class QiNiuController {
         } catch (IOException e) {
             e.printStackTrace();
              throw new ServiceException("上传失败!");
+        }
+    }
+
+
+    /**
+     * 字节流上传图片
+     * @param file
+     * @return
+     */
+
+    @RequestMapping("upload1")
+    public JsonResult upload1(@RequestParam @NotNull MultipartFile file) {
+        Random ra =new Random();
+        String key = new Date().getTime()+String.valueOf(ra.nextInt());
+        try {
+            // 调用put方法上传
+            InputStream inputStream = file.getInputStream();
+            Response res = uploadManager.put(handleImage(inputStream), key, getUpToken(BUCKET_NAME, key));
+            // 打印返回的信息
+            System.out.println(res.bodyString());
+            JSONObject jsStr = JSONObject.parseObject(res.bodyString());
+            return new JsonResult(jsStr);
+        } catch (QiniuException e) {
+            throw new ServiceException("上传失败!");
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new ServiceException("上传失败!");
+        }
+    }
+
+
+    /**
+     * 处理图片
+     * @param inputStream
+     * @return
+     */
+    public byte[]  handleImage(InputStream inputStream){
+
+        try {
+            BufferedImage image = Thumbnails.of(inputStream)
+                    .scale(0.5f).asBufferedImage();
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            ImageIO.write(image, "png", out);
+            byte[] b = out.toByteArray();
+            return b;
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new ServiceException("图片处理异常！");
         }
     }
 }
