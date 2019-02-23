@@ -9,6 +9,7 @@ import com.relly.blog.service.ArticleService;
 import com.relly.blog.utils.IdUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,6 +35,8 @@ public class ArticleServiceImpl implements ArticleService {
     @Resource
     private ArticleStarMapper articleStarMapper;
 
+    @Value("${spring.profiles.active}")
+    private String serverEnv;
 
 
 
@@ -110,7 +113,12 @@ public class ArticleServiceImpl implements ArticleService {
     public PageResult<ArticleMessageDTO> getArticleMessageDetail(String articleId, Integer pageSize, Integer pageCurrent) {
         int count = articleMapper.getArticleMessageCount(articleId);
         PageResult<ArticleMessageDTO> pageResult = new PageResult<>(pageCurrent, pageSize, count);
-        List<ArticleMessageDTO> articleMessageDTOList = articleMapper.getArticleMessage(articleId,pageResult);
+        List<ArticleMessageDTO> articleMessageDTOList = new ArrayList<>();
+        if (serverEnv.equals("test")){
+            articleMessageDTOList = articleMapper.getArticleMessage1(articleId,pageResult);
+        }else {
+            articleMessageDTOList = articleMapper.getArticleMessage(articleId,pageResult);
+        }
         List<ArticleMessageDTO> articleMessageDTOChildrenList = new ArrayList<>();
         for (ArticleMessageDTO am: articleMessageDTOList) {
             articleMessageDTOChildrenList = articleMapper.getArticleMessageChildren(am.getId(),am.getArticleId());

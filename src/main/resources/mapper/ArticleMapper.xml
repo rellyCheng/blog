@@ -313,6 +313,32 @@
     order by createTime desc
       <include refid="limit"/>
     </select>
+
+  <select id="getArticleMessage1" resultType="com.relly.blog.dto.ArticleMessageDTO">
+    SET @crank=0;
+    SELECT
+    article_message.id,
+    article_message.createTime,
+    articleId,
+    parentId,
+    content AS commentContent,
+    aite,
+    `name`,
+    `user`.id AS userId,
+    `user`.bgColor,
+    avatar,
+    @crank := @crank +1 as rankNum
+    FROM
+    article_message
+    LEFT JOIN `user` ON `user`.id = article_message.createUser
+    LEFT JOIN user_detail ON article_message.createUser = user_detail.userId
+    WHERE
+    articleId = #{articleId}
+    AND article_message.isDelete = 0
+    AND parentId IS NULL
+    order by createTime desc
+    <include refid="limit"/>
+  </select>
   <select id="getArticleMessageChildren" resultType="com.relly.blog.dto.ArticleMessageDTO">
 
     SELECT

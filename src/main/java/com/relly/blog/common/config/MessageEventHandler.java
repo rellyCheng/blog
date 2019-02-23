@@ -75,7 +75,7 @@ public class MessageEventHandler {
      */
     public static void sendBuyLogEvent(Map<String,Object> noticeContentMap, List<String> userIdList) {
         ArrayList<UUID> listClient = new ArrayList<>();
-        if (!listClient.isEmpty()){
+        if (!userIdList.isEmpty()){
             for (String userId:userIdList) {
                 if(mapClient.get(userId)!=null){
                     listClient.add(mapClient.get(userId));
