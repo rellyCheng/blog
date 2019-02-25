@@ -48,7 +48,7 @@ public class QiNiuController {
     }
 
     /**
-     * file 类型上传图片
+     * 上传原图
      * @param file 文件  （也可以是字节数组、或者File对象）
      * key 上传到七牛上的文件的名称  （同一个空间下，名称【key】是唯一的）
      */
@@ -74,7 +74,7 @@ public class QiNiuController {
 
 
     /**
-     * 字节流上传图片
+     * 上传处理过的图片
      * @param file
      * @return
      */
