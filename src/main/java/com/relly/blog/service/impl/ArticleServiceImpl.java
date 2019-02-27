@@ -75,7 +75,7 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     public PageResult getMyArticleListMore(String userId, int pageCurrent) {
         int rowCount = articleMapper.gettMyArticleListCount(userId);
-        PageResult<ArticleDTO> pageResult = new PageResult<>(pageCurrent, 1, rowCount);
+        PageResult<ArticleDTO> pageResult = new PageResult<>(pageCurrent, 10, rowCount);
 
         List<ArticleDTO> list = articleMapper.getMyArticleListMore(userId,pageResult);
         list = handleArticleDTOList(list);
@@ -209,7 +209,7 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     public PageResult<ArticleDTO> getAllArticleList(ArticleFilterDTO articleFilterDTO,int pageCurrent) {
         int rowCount = articleMapper.getAllArticleListCount();
-        PageResult<ArticleDTO> pageResult = new PageResult<>(pageCurrent, 3, rowCount);
+        PageResult<ArticleDTO> pageResult = new PageResult<>(pageCurrent, 10, rowCount);
         List<String> typeList = articleFilterDTO.getType();
         List<ArticleDTO> list = articleMapper.getAllArticleList(articleFilterDTO,typeList,pageResult);
         list = handleArticleDTOList(list);

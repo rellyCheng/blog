@@ -1,15 +1,14 @@
 package com.relly.blog.dto;
 
 public enum ArticleTypeEnum {
-    IT(0,"IT"),
-    FINANCE(1,"财经"),
-    TECHNOLOGY(2,"科技"),
-    SPORT(3,"体育"),
-    CAR(4,"汽车"),
-    EIGHT(5,"八卦"),
-    MILITARY(6,"军事"),
-    ESSAY(7,"随笔"),
-    Other(8,"其他"),
+    IT(0,"文集"),
+    FINANCE(1,"科学理论"),
+    TECHNOLOGY(2,"每日英语"),
+    SPORT(3,"学习小技巧"),
+    CAR(4,"生活感悟"),
+    EIGHT(5,"随笔"),
+    MILITARY(6,"体育"),
+    ESSAY(7,"其他"),
    ;
 
     private Integer key;
