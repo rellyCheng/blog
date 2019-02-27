@@ -371,6 +371,38 @@
     AND isDelete = 0
     AND parentId IS NULL
   </select>
+  <select id="getAllArticleListCount" resultType="java.lang.Integer">
+     SELECT
+            COUNT(*)
+        FROM
+            article
+            WHERE isDelete = 0 and isPublic = 0;
+  </select>
+  <select id="getAllArticleList" resultType="com.relly.blog.dto.ArticleDTO">
+    select
+    article.*,
+    article.id as articleId,
+    user_detail.avatar,
+    `user`.bgcolor
+    from article
+    left join `user` on `user`.id=article.createUser
+    left join user_detail on user_detail.userId=article.createUser
+    where article.isDelete = 0 and article.isPublic = 0
+    <if test="typeList != null">
+      AND article.type in
+      <foreach collection="typeList" index="index" item="item" open="(" separator=", " close=")">
+        #{item}
+      </foreach>
+    </if>
+    <if test="articleFilterDTO.title != null">
+      AND article.title like "%"#{articleFilterDTO.title,jdbcType = VARCHAR}"%"
+    </if>
+    <if test="articleFilterDTO.ownerName != null">
+      AND article.ownerName like "%"#{articleFilterDTO.ownerName,jdbcType = VARCHAR}"%"
+    </if>
+    ORDER BY article.createTime DESC
+    <include refid="limit"/>
+  </select>
   <sql id="limit">
         limit #{pageObject.startIndex}, #{pageObject.pageSize}
   </sql>

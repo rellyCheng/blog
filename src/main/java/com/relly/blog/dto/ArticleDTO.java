@@ -29,6 +29,7 @@ public class ArticleDTO {
     private String description;
     private String href;
     private String ownerName;
+    private String createUser;
     private String members;
     private Integer likeNum;
     private Integer messageNum;

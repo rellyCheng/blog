@@ -1,10 +1,7 @@
 package com.relly.blog.service;
 
 import com.relly.blog.common.model.PageResult;
-import com.relly.blog.dto.AddArticleMessageDTO;
-import com.relly.blog.dto.ArticleDTO;
-import com.relly.blog.dto.ArticleMessageDTO;
-import com.relly.blog.dto.UserDTO;
+import com.relly.blog.dto.*;
 import com.relly.blog.entity.UserEntity;
 
 import java.text.ParseException;
@@ -26,4 +23,6 @@ public interface ArticleService {
     void likeArticle(String articleId);
 
     String starArticle(String userId,String articleId);
+
+    PageResult<ArticleDTO> getAllArticleList(ArticleFilterDTO articleFilterDTO, int pageCurrent);
 }

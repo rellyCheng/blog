@@ -44,11 +44,11 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     public List<ArticleDTO> getArticleListByUser(String userId) {
         List<ArticleDTO> list = articleMapper.getArticleListByUser(userId);
-        list = handleArticleDTOList(list,userId);
+        list = handleArticleDTOList(list);
         return list;
     }
 
-    public List<ArticleDTO> handleArticleDTOList(List<ArticleDTO> list,String userId){
+    public List<ArticleDTO> handleArticleDTOList(List<ArticleDTO> list){
         int starNum;
         int isStarNum;
         int messageNum;
@@ -56,7 +56,7 @@ public class ArticleServiceImpl implements ArticleService {
             starNum = articleStarMapper.getStarNumByArticleId(articleDTO.getArticleId());
             articleDTO.setStarNum(starNum);
 
-            isStarNum = articleStarMapper.getStarNumByArticleIdAndUserId(articleDTO.getArticleId(),userId);
+            isStarNum = articleStarMapper.getStarNumByArticleIdAndUserId(articleDTO.getArticleId(),articleDTO.getCreateUser());
             articleDTO.setIsStar(isStarNum>0);
 
             messageNum = articleMessageMapper.getMessageNumByArticleId(articleDTO.getArticleId());
@@ -78,7 +78,7 @@ public class ArticleServiceImpl implements ArticleService {
         PageResult<ArticleDTO> pageResult = new PageResult<>(pageCurrent, 1, rowCount);
 
         List<ArticleDTO> list = articleMapper.getMyArticleListMore(userId,pageResult);
-        list = handleArticleDTOList(list,userId);
+        list = handleArticleDTOList(list);
         pageResult.setPageData(list);
         return pageResult;
     }
@@ -204,5 +204,16 @@ public class ArticleServiceImpl implements ArticleService {
         }
 
 
+    }
+
+    @Override
+    public PageResult<ArticleDTO> getAllArticleList(ArticleFilterDTO articleFilterDTO,int pageCurrent) {
+        int rowCount = articleMapper.getAllArticleListCount();
+        PageResult<ArticleDTO> pageResult = new PageResult<>(pageCurrent, 3, rowCount);
+        List<String> typeList = articleFilterDTO.getType();
+        List<ArticleDTO> list = articleMapper.getAllArticleList(articleFilterDTO,typeList,pageResult);
+        list = handleArticleDTOList(list);
+        pageResult.setPageData(list);
+        return pageResult;
     }
 }

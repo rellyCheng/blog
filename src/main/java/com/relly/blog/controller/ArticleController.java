@@ -2,10 +2,7 @@ package com.relly.blog.controller;
 
 import com.relly.blog.common.model.JsonResult;
 import com.relly.blog.common.model.PageResult;
-import com.relly.blog.dto.AddArticleMessageDTO;
-import com.relly.blog.dto.ArticleDTO;
-import com.relly.blog.dto.ArticleMessageDTO;
-import com.relly.blog.dto.UserDTO;
+import com.relly.blog.dto.*;
 import com.relly.blog.entity.UserEntity;
 import com.relly.blog.service.ArticleService;
 import com.relly.blog.utils.JwtUtil;
@@ -38,6 +35,18 @@ public class ArticleController {
         UserEntity userEntity = JwtUtil.getUser(request);
         List<ArticleDTO> list = articleService.getArticleListByUser(userEntity.getId());
         return new JsonResult(list);
+    }
+
+    /**
+     * 获取全部的文章
+     * @author Relly
+     * @date 2018/02/27 15:17
+     * @return com.relly.blog.common.model.JsonResult
+     */
+    @PostMapping("getAllArticleListMore")
+    public JsonResult getAllArticleList(@RequestBody ArticleFilterDTO articleFilterDTO, @Param("pageCurrent") int pageCurrent){
+        PageResult<ArticleDTO> pageResult = articleService.getAllArticleList(articleFilterDTO,pageCurrent);
+        return new JsonResult(pageResult);
     }
 
     /**
