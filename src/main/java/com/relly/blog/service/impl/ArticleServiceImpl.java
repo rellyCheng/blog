@@ -174,7 +174,7 @@ public class ArticleServiceImpl implements ArticleService {
         noticeContentMap.put("noticeTitle",noticeEntity.getTitle());
         noticeContentMap.put("noticeContent",articleMessageDTO.getContent());
         List<String> list = new ArrayList<>();
-        list.add(userId);
+        list.add(articleMessageDTO.getAite());
         MessageEventHandler.sendBuyLogEvent(noticeContentMap,list);
     }
 
