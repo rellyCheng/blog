@@ -320,15 +320,19 @@ public class UserServiceImpl implements UserService {
 
                 userMap.put("token",jwtToken);
                 List<String> authList = new ArrayList<>();
-                authList.add("user");
+                authList.add("currentUser");
                 userMap.put("currentAuthority",authList);
+                userMap.put("isNew","0");
+                userMap.put("userName",userName);
+                userMap.put("name",data.getString("name"));
             }else {
                 //生成JwtToken
                 jwtToken = JwtUtil.sign(userName,checkUser.getId(),checkUser.getVerify());
                 userMap.put("token",jwtToken);
                 List<String> authList = permissionMapper.getPermissionListByUserId(checkUser.getId());
-                authList.add("user");
+                authList.add("currentUser");
                 userMap.put("currentAuthority",authList);
+                userMap.put("isNew","1");
             }
            return userMap;
 

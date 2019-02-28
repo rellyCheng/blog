@@ -194,8 +194,11 @@ public class LoginController {
     public JsonResult githubUser(@NotNull String code, HttpServletResponse response){
         try {
             Map<String,Object> map = userService.githubUser(code);
-
-            response.sendRedirect("http://localhost:8000/account/center?token="+map.get("token")+"&auth="+map.get("currentAuthority"));
+            if(map.get("isNew")=="0"){
+                response.sendRedirect(webAddress+"/result/github?userName="+map.get("userName")+"&name="+map.get("name"));
+            }else {
+                response.sendRedirect(webAddress+"/index?token="+map.get("token")+"&auth="+map.get("currentAuthority"));
+            }
             return new JsonResult(map);
 
         } catch (IOException e) {
