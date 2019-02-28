@@ -195,7 +195,7 @@ public class LoginController {
         try {
             Map<String,Object> map = userService.githubUser(code);
             if(map.get("isNew")=="0"){
-                response.sendRedirect(webAddress+"/result/github?userName="+map.get("userName")+"&name="+map.get("name"));
+                response.sendRedirect(webAddress+"/result/registerSuccess?userName="+map.get("userName")+"&name="+map.get("name"));
             }else {
                 response.sendRedirect(webAddress+"/index?token="+map.get("token")+"&auth="+map.get("currentAuthority"));
             }
