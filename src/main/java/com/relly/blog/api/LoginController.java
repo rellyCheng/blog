@@ -13,6 +13,7 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -50,6 +51,9 @@ public class LoginController {
 
     @Resource
     private PermissionService permissionService;
+
+    @Value("${webAddress}")
+    private String webAddress;
 
     public static String WEBHOOK_TOKEN = "https://oapi.dingtalk.com/robot/send?access_token=08c3e07e4c021237b67cc7b9c0a9dcb790d3239041076f9a4831c44d92d35164";
 
@@ -167,10 +171,14 @@ public class LoginController {
      * @param verify
      * @return com.relly.blog.common.model.JsonResult
      */
-    @PostMapping("activation")
-    public JsonResult activation(@NotNull String verify){
+    @RequestMapping("activation")
+    public void activation(@NotNull String verify,HttpServletResponse response){
         userService.activation(verify);
-        return new JsonResult();
+        try {
+            response.sendRedirect(webAddress+"/result/activationSuccess");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
