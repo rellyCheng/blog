@@ -29,7 +29,9 @@ public class ShiroConfig {
 		//拦截器.
 		Map<String,String> filterChainDefinitionMap = new LinkedHashMap<String,String>();
 		// 配置不会被拦截的链接 顺序判断
+		filterChainDefinitionMap.put("/publicApi/**", "anon");
 		filterChainDefinitionMap.put("/publicApi/login/accountLogin", "anon");
+
 
 		//配置退出 过滤器,其中的具体的退出代码Shiro已经替我们实现了
 		filterChainDefinitionMap.put("/publicApi/logout", "anon");

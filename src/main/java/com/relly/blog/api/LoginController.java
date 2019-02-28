@@ -80,7 +80,7 @@ public class LoginController {
         map.put("userId",userEntity.getId());
         map.put("name",userEntity.getName());
         List<String> authList = permissionService.getPermissionListByUserId(userEntity.getId());
-        authList.add("user");
+        authList.add("currentUser");
         map.put("currentAuthority",authList);
             // 判断当前用户是否登录
         if (currentUser.isAuthenticated() == true) {
