@@ -350,7 +350,8 @@
         aite,
         `name`,
         `user`.bgColor,
-        avatar
+        avatar,
+        `user`.id AS userId
     FROM
         article_message
         LEFT JOIN `user` ON `user`.id = article_message.createUser
