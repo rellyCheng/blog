@@ -59,6 +59,9 @@ public class UserServiceImpl implements UserService {
     @Value("${spring.mail.username}")
     private String from;
 
+    @Value("${apiAddress}")
+    private String apiAddress;
+
 
 
     @Override
@@ -216,7 +219,7 @@ public class UserServiceImpl implements UserService {
 
         //发送激活邮件
         String title = "注册All In All，验证邮箱，激活账号";
-        String url = "点击链接激活账号http://all.1024sir.com/publicApi/activation?verify="+map.get("verify");
+        String url = "点击链接激活账号"+apiAddress+"/publicApi/activation?verify="+map.get("verify");
         sendMail(title,url,userRegisterDTO.getEmail());
 
         String jwtToken = JwtUtil.sign(userRegisterDTO.getUserName(),userId,map.get("verify"));

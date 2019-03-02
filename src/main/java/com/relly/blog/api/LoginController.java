@@ -55,6 +55,10 @@ public class LoginController {
     @Value("${webAddress}")
     private String webAddress;
 
+
+    @Value("${apiAddress}")
+    private String apiAddress;
+
     public static String WEBHOOK_TOKEN = "https://oapi.dingtalk.com/robot/send?access_token=08c3e07e4c021237b67cc7b9c0a9dcb790d3239041076f9a4831c44d92d35164";
 
     /**
