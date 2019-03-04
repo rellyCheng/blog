@@ -1,7 +1,6 @@
 package com.relly.blog.mapper;
 
 import com.relly.blog.common.model.PageObject;
-import com.relly.blog.common.model.PageResult;
 import com.relly.blog.dto.ArticleDTO;
 import com.relly.blog.dto.ArticleFilterDTO;
 import com.relly.blog.dto.ArticleMessageDTO;
@@ -80,4 +79,8 @@ public interface ArticleMapper {
     List<ArticleDTO> getAllArticleList(@Param("articleFilterDTO")ArticleFilterDTO articleFilterDTO,
                                        @Param("typeList")List<String> typeList,
                                        @Param("pageObject")PageObject pageObject);
+
+    int getMystarArticleCount(@Param("userId") String userId);
+
+    List<ArticleDTO> getMystarArticle(@Param("pageObject") PageObject pageObject, @Param("userId") String userId);
 }

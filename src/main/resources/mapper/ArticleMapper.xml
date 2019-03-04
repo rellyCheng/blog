@@ -404,6 +404,23 @@
     ORDER BY article.createTime DESC
     <include refid="limit"/>
   </select>
+  <select id="getMystarArticleCount" resultType="java.lang.Integer">
+    SELECT
+    COUNT(articleId)
+    FROM
+	article
+	JOIN article_star ON article.id = article_star.articleId
+	WHERE article_star.userId = #{userId}
+  </select>
+  <select id="getMystarArticle" resultType="com.relly.blog.dto.ArticleDTO">
+    SELECT
+    *
+    FROM
+	article
+	JOIN article_star ON article.id = article_star.articleId
+	WHERE article_star.userId = #{userId}
+    <include refid="limit"/>
+  </select>
   <sql id="limit">
         limit #{pageObject.startIndex}, #{pageObject.pageSize}
   </sql>
