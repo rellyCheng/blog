@@ -2,7 +2,10 @@ package com.relly.blog.controller;
 
 import com.relly.blog.common.model.JsonResult;
 import com.relly.blog.common.model.PageResult;
-import com.relly.blog.dto.*;
+import com.relly.blog.dto.AddArticleMessageDTO;
+import com.relly.blog.dto.ArticleDTO;
+import com.relly.blog.dto.ArticleFilterDTO;
+import com.relly.blog.dto.ArticleMessageDTO;
 import com.relly.blog.entity.UserEntity;
 import com.relly.blog.service.ArticleService;
 import com.relly.blog.utils.JwtUtil;
@@ -132,5 +135,15 @@ public class ArticleController {
         String result = articleService.starArticle(userEntity.getId(),articleId);
         return new JsonResult(result);
     }
+
+    @PostMapping("getMyStarArticles")
+    public JsonResult getMyStarArticles(HttpServletRequest request,
+                                       @RequestParam("pageCurrent")  @NotNull Integer pageCurrent,
+                                       @RequestParam("pageSize") @NotNull Integer pageSize){
+        UserEntity userEntity = JwtUtil.getUser(request);
+        PageResult<ArticleDTO> pageResult = articleService.getMystarArticle(userEntity.getId(),pageCurrent,pageSize);
+        return new JsonResult(pageResult);
+    }
+
 
 }
