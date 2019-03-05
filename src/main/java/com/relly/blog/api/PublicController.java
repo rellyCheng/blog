@@ -1,7 +1,6 @@
 package com.relly.blog.api;
 
 
-import com.relly.blog.common.exception.ServiceException;
 import com.relly.blog.common.model.JsonResult;
 import com.relly.blog.common.model.PageResult;
 import com.relly.blog.dto.ArticleDTO;
@@ -10,10 +9,7 @@ import com.relly.blog.dto.ArticleMessageDTO;
 import com.relly.blog.service.ArticleService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.annotations.Param;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.validation.constraints.NotBlank;
@@ -58,5 +54,17 @@ public class PublicController {
         PageResult<ArticleMessageDTO> pageResult = articleService.getArticleMessageDetail(articleId,pageSize,pageCurrent);
         return new JsonResult(pageResult);
     }
+
+    /**
+     * 搜索文章 根据title获取文章列表
+     * @param title
+     * @return
+     */
+    @PostMapping("article/getArticleByTitle")
+    public JsonResult getArticleByTitle(@RequestParam("title") String title){
+        PageResult<ArticleDTO> pageResult = articleService.getArticleByTitle(title);
+        return new JsonResult(pageResult);
+    }
+
 
 }

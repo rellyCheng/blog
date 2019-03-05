@@ -222,19 +222,19 @@ public class ArticleServiceImpl implements ArticleService {
         int rowCount = articleMapper.getMystarArticleCount(userId);
         PageResult<ArticleDTO> pageResult = new PageResult<>(pageCurrent, pageSize, rowCount);
         List<ArticleDTO> list = articleMapper.getMystarArticle(pageResult,userId);
-        for (ArticleDTO article: list) {
-            loopArticleType: for(ArticleTypeEnum articleTypeEnum : ArticleTypeEnum.values()){
-                if(articleTypeEnum.getKey().toString().equals(article.getType())){
-                    article.setArticleTypeStr(articleTypeEnum.getValue());
-                    break loopArticleType;
-                }
-            }
-
-        }
-
+        handleArticleDTOList(list);
         pageResult.setPageData(list);
         return pageResult;
     }
 
+    @Override
+    public PageResult<ArticleDTO> getArticleByTitle(String title) {
+        int rowCount = articleMapper.getArticleByTitleCount(title);
+        PageResult<ArticleDTO> pageResult = new PageResult<>(1, rowCount, rowCount);
+        List<ArticleDTO> list = articleMapper.getArticleByTitle(pageResult,title);
+        handleArticleDTOList(list);
+        pageResult.setPageData(list);
+        return pageResult;
+    }
 
 }

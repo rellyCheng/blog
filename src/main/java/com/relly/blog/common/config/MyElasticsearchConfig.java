@@ -5,6 +5,7 @@ import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.TransportAddress;
 import org.elasticsearch.transport.client.PreBuiltTransportClient;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -14,7 +15,7 @@ import java.net.UnknownHostException;
  * @CreteTime 2019-02-24 20:39
  * @Description
  */
-//@Configuration
+@Configuration
 public class MyElasticsearchConfig {
     @Bean
     public TransportClient client() throws UnknownHostException {

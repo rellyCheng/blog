@@ -29,4 +29,6 @@ public interface ArticleService {
     PageResult<ArticleDTO> getAllArticleList(ArticleFilterDTO articleFilterDTO, int pageCurrent);
 
     PageResult<ArticleDTO> getMystarArticle(String userId, Integer pageCurrent, Integer pageSize);
+
+    PageResult<ArticleDTO> getArticleByTitle(String title);
 }
