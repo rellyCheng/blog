@@ -6,6 +6,7 @@ import com.relly.blog.dto.*;
 import com.relly.blog.entity.*;
 import com.relly.blog.mapper.*;
 import com.relly.blog.service.ArticleService;
+import com.relly.blog.service.ESService;
 import com.relly.blog.utils.IdUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -37,6 +38,8 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Value("${spring.profiles.active}")
     private String serverEnv;
+    @Resource
+    private ESService esService;
 
 
 
@@ -84,6 +87,7 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
+    @Transactional
     public void save(UserEntity currentUser, ArticleDTO articleDTO) {
         currentUser = userMapper.selectByPrimaryKey(currentUser.getId());
         ArticleEntity articleEntity = ArticleEntity.builder()
@@ -100,6 +104,15 @@ public class ArticleServiceImpl implements ArticleService {
                 .createUser(currentUser.getId())
                 .build();
         articleMapper.insertSelective(articleEntity);
+
+
+        //保存到ES中
+        articleDTO.setUpdateTime(articleEntity.getCreateTime().toString());//这里time类型最开始设计有问题 应当为date类型
+        articleDTO.setHref(articleEntity.getHref());
+        articleDTO.setArticleId(articleEntity.getId());
+        articleDTO.setOwnerName(currentUser.getName());
+        articleDTO.setCreateUser(currentUser.getCreateUser());
+        esService.addArticleForES(articleDTO);
 
     }
 
