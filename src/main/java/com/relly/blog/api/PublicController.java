@@ -78,6 +78,11 @@ public class PublicController {
         return new JsonResult(pageResult);
     }
 
+    /**
+     * 搜索文章 根据关键字全文检索
+     * @param key
+     * @return
+     */
     @PostMapping("article/getArticleByKey")
     public JsonResult getArticleByKey(@RequestParam(value = "key",required = false) String key){
         BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();

@@ -4,6 +4,7 @@ import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.TransportAddress;
 import org.elasticsearch.transport.client.PreBuiltTransportClient;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -17,11 +18,14 @@ import java.net.UnknownHostException;
  */
 @Configuration
 public class MyElasticsearchConfig {
+    @Value("${elasticIp}")
+    private String elasticIp;
+
     @Bean
     public TransportClient client() throws UnknownHostException {
 
         TransportAddress node = new TransportAddress(
-                InetAddress.getByName("localhost"),
+                InetAddress.getByName(elasticIp),
                 9300
         );
 

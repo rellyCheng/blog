@@ -1,6 +1,7 @@
 package com.relly.blog.service.impl;
 
 import com.relly.blog.common.config.MessageEventHandler;
+import com.relly.blog.common.exception.ServiceException;
 import com.relly.blog.common.model.PageResult;
 import com.relly.blog.dto.*;
 import com.relly.blog.entity.*;
@@ -106,13 +107,21 @@ public class ArticleServiceImpl implements ArticleService {
         articleMapper.insertSelective(articleEntity);
 
 
-        //保存到ES中
-        articleDTO.setUpdateTime(articleEntity.getCreateTime().toString());//这里time类型最开始设计有问题 应当为date类型
-        articleDTO.setHref(articleEntity.getHref());
-        articleDTO.setArticleId(articleEntity.getId());
-        articleDTO.setOwnerName(currentUser.getName());
-        articleDTO.setCreateUser(currentUser.getCreateUser());
-        esService.addArticleForES(articleDTO);
+        //保存到ES中  只有本地可以，云服务器配置太低无法启动ES
+        if (serverEnv.equals("dev")){//贫穷判断   /*😂😂😂😂*/
+            articleDTO.setUpdateTime(articleEntity.getCreateTime().toString());//这里time类型最开始设计有问题 应当为date类型
+            articleDTO.setHref(articleEntity.getHref());
+            articleDTO.setArticleId(articleEntity.getId());
+            articleDTO.setOwnerName(currentUser.getName());
+            articleDTO.setCreateUser(currentUser.getCreateUser());
+            try {
+                esService.addArticleForES(articleDTO);
+            } catch (Exception e) {
+                e.printStackTrace();
+                throw new ServiceException("保存到ES中异常");
+            }
+        }
+
 
     }
 
