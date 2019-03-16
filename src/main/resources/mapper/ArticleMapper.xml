@@ -421,6 +421,27 @@
 	WHERE article_star.userId = #{userId}
     <include refid="limit"/>
   </select>
+    <select id="getArticleByTitleCount" resultType="java.lang.Integer">
+      <bind name="pattern" value="'%' + title + '%'" />
+      SELECT
+    COUNT(*)
+    FROM
+	article
+	WHERE article.title LIKE #{pattern}
+    </select>
+  <select id="getArticleByTitle" resultType="com.relly.blog.dto.ArticleDTO">
+    <bind name="pattern" value="'%' + title + '%'" />
+    SELECT
+    article.*,
+    article.id as articleId,
+    user_detail.avatar,
+    `user`.bgcolor
+    from article
+    left join `user` on `user`.id=article.createUser
+    left join user_detail on user_detail.userId=article.createUser
+	WHERE article.isDelete = 0 and article.isPublic = 0 and article.title LIKE #{pattern}
+    <include refid="limit"/>
+  </select>
   <sql id="limit">
         limit #{pageObject.startIndex}, #{pageObject.pageSize}
   </sql>

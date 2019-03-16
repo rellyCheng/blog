@@ -1,11 +1,13 @@
 package com.relly.blog.service.impl;
 
 import com.relly.blog.common.config.MessageEventHandler;
+import com.relly.blog.common.exception.ServiceException;
 import com.relly.blog.common.model.PageResult;
 import com.relly.blog.dto.*;
 import com.relly.blog.entity.*;
 import com.relly.blog.mapper.*;
 import com.relly.blog.service.ArticleService;
+import com.relly.blog.service.ESService;
 import com.relly.blog.utils.IdUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -37,6 +39,8 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Value("${spring.profiles.active}")
     private String serverEnv;
+    @Resource
+    private ESService esService;
 
 
 
@@ -84,6 +88,7 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
+    @Transactional
     public void save(UserEntity currentUser, ArticleDTO articleDTO) {
         currentUser = userMapper.selectByPrimaryKey(currentUser.getId());
         ArticleEntity articleEntity = ArticleEntity.builder()
@@ -100,6 +105,23 @@ public class ArticleServiceImpl implements ArticleService {
                 .createUser(currentUser.getId())
                 .build();
         articleMapper.insertSelective(articleEntity);
+
+
+        //保存到ES中  只有本地可以，云服务器配置太低无法启动ES
+        if (serverEnv.equals("dev")){//贫穷判断   /*😂😂😂😂*/
+            articleDTO.setUpdateTime(articleEntity.getCreateTime().toString());//这里time类型最开始设计有问题 应当为date类型
+            articleDTO.setHref(articleEntity.getHref());
+            articleDTO.setArticleId(articleEntity.getId());
+            articleDTO.setOwnerName(currentUser.getName());
+            articleDTO.setCreateUser(currentUser.getCreateUser());
+            try {
+                esService.addArticleForES(articleDTO);
+            } catch (Exception e) {
+                e.printStackTrace();
+                throw new ServiceException("保存到ES中异常");
+            }
+        }
+
 
     }
 
@@ -222,19 +244,19 @@ public class ArticleServiceImpl implements ArticleService {
         int rowCount = articleMapper.getMystarArticleCount(userId);
         PageResult<ArticleDTO> pageResult = new PageResult<>(pageCurrent, pageSize, rowCount);
         List<ArticleDTO> list = articleMapper.getMystarArticle(pageResult,userId);
-        for (ArticleDTO article: list) {
-            loopArticleType: for(ArticleTypeEnum articleTypeEnum : ArticleTypeEnum.values()){
-                if(articleTypeEnum.getKey().toString().equals(article.getType())){
-                    article.setArticleTypeStr(articleTypeEnum.getValue());
-                    break loopArticleType;
-                }
-            }
-
-        }
-
+        handleArticleDTOList(list);
         pageResult.setPageData(list);
         return pageResult;
     }
 
+    @Override
+    public PageResult<ArticleDTO> getArticleByTitle(String title) {
+        int rowCount = articleMapper.getArticleByTitleCount(title);
+        PageResult<ArticleDTO> pageResult = new PageResult<>(1, rowCount, rowCount);
+        List<ArticleDTO> list = articleMapper.getArticleByTitle(pageResult,title);
+        handleArticleDTOList(list);
+        pageResult.setPageData(list);
+        return pageResult;
+    }
 
 }

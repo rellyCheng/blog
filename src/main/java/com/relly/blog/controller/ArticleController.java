@@ -136,6 +136,13 @@ public class ArticleController {
         return new JsonResult(result);
     }
 
+    /**
+     * 获取我的收藏的文章
+     * @param request
+     * @param pageCurrent
+     * @param pageSize
+     * @return
+     */
     @PostMapping("getMyStarArticles")
     public JsonResult getMyStarArticles(HttpServletRequest request,
                                        @RequestParam("pageCurrent")  @NotNull Integer pageCurrent,

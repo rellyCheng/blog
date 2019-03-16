@@ -1,4 +1,4 @@
-package com.relly.blog.common.filter;
+package com.relly.blog.common.config;
 
 
 import lombok.extern.slf4j.Slf4j;
