@@ -5,8 +5,10 @@ import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.filter.DelegatingFilterProxy;
 import org.springframework.web.servlet.handler.SimpleMappingExceptionResolver;
 
 import javax.annotation.Resource;
@@ -20,7 +22,7 @@ import java.util.Properties;
 public class ShiroConfig {
 	@Resource
 	private JWTFilter jwtFilter;
-	@Bean
+	@Bean(name = "shiroFilter")
 	public ShiroFilterFactoryBean shirFilter(SecurityManager securityManager) {
 		System.out.println("ShiroConfiguration.shirFilter()");
 		ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
@@ -37,14 +39,14 @@ public class ShiroConfig {
 //		filterChainDefinitionMap.put("/publicApi/logout", "anon");
 		//<!-- 过滤链定义，从上向下顺序执行，一般将/**放在最为下边 -->:这是一个坑呢，一不小心代码就不好使了;
 		//<!-- authc:所有url都必须认证通过才可以访问; anon:所有url都都可以匿名访问-->
-		filterChainDefinitionMap.put("/**", "anon");
+		filterChainDefinitionMap.put("/**", "authc");
 
 		// 如果不设置默认会自动寻找Web工程根目录下的"/login"页面
-//		shiroFilterFactoryBean.setLoginUrl("/api/logout");
+		shiroFilterFactoryBean.setLoginUrl("/api/logout");
 		// 登录成功后要跳转的链接
 //		shiroFilterFactoryBean.setSuccessUrl("/index");
 		//未授权界面;
-//		shiroFilterFactoryBean.setUnauthorizedUrl("/403");
+		shiroFilterFactoryBean.setUnauthorizedUrl("/403");
 		//所有包含上面的链接都要jwt验证
 		filterChainDefinitionMap.put("/api/**", "jwt");
 		Map<String, Filter> filterMap = new HashMap<>();
@@ -113,4 +115,15 @@ public class ShiroConfig {
 		//r.setWarnLogCategory("example.MvcLogger");     // No default
 		return r;
 	}
+	@Bean
+	public FilterRegistrationBean delegatingFilterProxy(){
+		FilterRegistrationBean filterRegistrationBean = new FilterRegistrationBean();
+		DelegatingFilterProxy proxy = new DelegatingFilterProxy();
+		proxy.setTargetFilterLifecycle(true);
+		proxy.setTargetBeanName("shiroFilter");
+		filterRegistrationBean.setFilter(proxy);
+		return filterRegistrationBean;
+	}
+
+
 }

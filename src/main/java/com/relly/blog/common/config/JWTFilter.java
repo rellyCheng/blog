@@ -34,15 +34,22 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
 
     @Override
     protected boolean isAccessAllowed(ServletRequest request, ServletResponse response, Object mappedValue) {
+        Subject subject = getSubject(request,response);
+//        未登陆 如果页面长时间未刷新,session就会改变,导致subject未认证,和jwttoken的时效性冲突
+        if (!subject.isAuthenticated()){
+            response401(response) ;
+            return false;
+        }
+
         //判断用户是否想要登入。检测header里面是否包含Authorization字段即可
         HttpServletRequest httpServletRequest = (HttpServletRequest) request;
         String authorization = httpServletRequest.getHeader("Authorization");
         if(authorization == null){
-            return true ;
+           return false;
         }
         authorization = authorization.substring(7, authorization.length());
         if(authorization== null || authorization.equals("null")){
-            return true ;
+            return false;
         }
         return checkToken(authorization,response,request) ;
     }
@@ -52,18 +59,24 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
      */
     protected boolean checkToken(String token, ServletResponse resp, ServletRequest request ) {
 
-        Subject subject = getSubject(request,resp);
-//        未登陆 如果页面长时间未刷新,session就会改变,导致subject未认证,和jwttoken的时效性冲突
-        if (!subject.isAuthenticated()){
+
+        UserEntity user = null;
+        try {
+            user = JwtUtil.getUser((HttpServletRequest)request);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response401(resp) ;
             return false;
         }
-        UserEntity user = JwtUtil.getUser((HttpServletRequest)request);
         user = userService.getUserByUserName(user.getUserName());
         Boolean bl = JwtUtil.verify(token,user.getUserName(),user.getId(),user.getVerify());
         if(!bl){
             response401(resp) ;
+            return bl;
         }
-        return bl;
+        System.out.printf(String.valueOf(((HttpServletRequest) request).getSession()));
+
+        return true;
 
     }
     /**

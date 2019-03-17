@@ -72,7 +72,9 @@ public class LoginController {
      *@update
      */
     @PostMapping("login/accountLogin")
-    public JsonResult account(@NotBlank String userName,@NotBlank String password){
+    public JsonResult account(HttpServletRequest request,@NotBlank String userName,@NotBlank String password){
+
+        System.out.printf(String.valueOf(request.getSession()));
         UserEntity userEntity = userService.getUserByUserName(userName);
         if (userEntity==null){
             throw new ServiceException("当前账号尚未注册！");

@@ -12,8 +12,8 @@ import java.io.UnsupportedEncodingException;
 import java.util.Date;
 
 public class JwtUtil {
-    // 过期时间5分钟
-    private static final long EXPIRE_TIME = 6000*60*1000;
+    // 过期时间10个小时
+    private static final long EXPIRE_TIME = 600*60*1000;
 
     /**
      * 校验token是否正确 校验密码更改的情况
