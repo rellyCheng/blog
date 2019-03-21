@@ -147,6 +147,11 @@
             <!--<artifactId>spring-boot</artifactId>-->
             <!--<version>1.5.9.RELEASE</version>-->
         <!--</dependency>-->
+        <dependency >
+            <groupId >com.jtg.lib.pager</groupId >
+            <artifactId >jtg-pager</artifactId >
+            <version >1.0.3-SNAPSHOT</version >
+        </dependency >
 
     </dependencies>
 
