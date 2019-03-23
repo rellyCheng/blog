@@ -4,7 +4,6 @@ import com.relly.blog.common.model.JsonResult;
 import com.relly.blog.entity.UserEntity;
 import com.relly.blog.service.UserService;
 import com.relly.blog.utils.JwtUtil;
-import org.apache.shiro.subject.Subject;
 import org.apache.shiro.web.filter.authc.BasicHttpAuthenticationFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,12 +33,12 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
 
     @Override
     protected boolean isAccessAllowed(ServletRequest request, ServletResponse response, Object mappedValue) {
-        Subject subject = getSubject(request,response);
-//        未登陆 如果页面长时间未刷新,session就会改变,导致subject未认证,和jwttoken的时效性冲突
-        if (!subject.isAuthenticated()){
-            response401(response) ;
-            return false;
-        }
+//        Subject subject = getSubject(request,response);
+////        未登陆 如果页面长时间未刷新,session就会改变,导致subject未认证,和jwttoken的时效性冲突
+//        if (!subject.isAuthenticated()){
+//            response401(response) ;
+//            return false;
+//        }
 
         //判断用户是否想要登入。检测header里面是否包含Authorization字段即可
         HttpServletRequest httpServletRequest = (HttpServletRequest) request;
@@ -74,7 +73,6 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
             response401(resp) ;
             return bl;
         }
-        System.out.printf(String.valueOf(((HttpServletRequest) request).getSession()));
 
         return true;
 

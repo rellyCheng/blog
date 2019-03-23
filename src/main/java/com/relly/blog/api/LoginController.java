@@ -225,13 +225,13 @@ public class LoginController {
 
      */
     @PostMapping("ddWebHook")
-    public JsonResult ddWebHook(@NotBlank String content) throws Exception {
+    public JsonResult ddWebHook(String name,String contact,String message) throws Exception {
         HttpClient httpclient = HttpClients.createDefault();
 
         HttpPost httppost = new HttpPost(WEBHOOK_TOKEN);
         httppost.addHeader("Content-Type", "application/json; charset=utf-8");
 
-        String textMsg = "{ \"msgtype\": \"text\", \"text\": {\"content\": \""+content+"\"}}";
+        String textMsg = "{ \"msgtype\": \"text\", \"text\": {\"content\": \""+"姓名："+name+"；联系方式："+contact+"；留言："+message+"\"}}";
         StringEntity se = new StringEntity(textMsg, "utf-8");
         httppost.setEntity(se);
 
