@@ -4,7 +4,6 @@ import com.relly.blog.common.model.JsonResult;
 import com.relly.blog.entity.UserEntity;
 import com.relly.blog.service.UserService;
 import com.relly.blog.utils.JwtUtil;
-import org.apache.shiro.subject.Subject;
 import org.apache.shiro.web.filter.authc.BasicHttpAuthenticationFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -74,7 +73,6 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
             response401(resp) ;
             return bl;
         }
-        System.out.printf(String.valueOf(((HttpServletRequest) request).getSession()));
 
         return true;
 
