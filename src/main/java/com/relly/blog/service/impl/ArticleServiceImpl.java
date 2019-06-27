@@ -215,7 +215,7 @@ public class ArticleServiceImpl implements ArticleService {
     public String starArticle(String userId,String articleId) {
         Integer isStarNum = articleStarMapper.getStarNumByArticleIdAndUserId(articleId,userId);
         if(isStarNum>0){
-            articleStarMapper.delRecord(articleId);
+            articleStarMapper.delRecord(articleId,userId);
             return ArticleStarEnum.CANCLE.getValue();
         }else {
             ArticleStarEntity articleStarEntity = new ArticleStarEntity();

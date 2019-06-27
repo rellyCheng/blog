@@ -33,7 +33,7 @@ public class ArticleController {
      * @date 2018/11/19 15:07
      * @return com.relly.blog.common.model.JsonResult
      */
-    @PostMapping("getArticleListByUser")
+    @RequestMapping("getArticleListByUser")
     public JsonResult getArticleListByUser(HttpServletRequest request){
         UserEntity userEntity = JwtUtil.getUser(request);
         List<ArticleDTO> list = articleService.getArticleListByUser(userEntity.getId());
@@ -46,7 +46,7 @@ public class ArticleController {
      * @date 2018/02/27 15:17
      * @return com.relly.blog.common.model.JsonResult
      */
-    @PostMapping("getAllArticleListMore")
+    @RequestMapping("getAllArticleListMore")
     public JsonResult getAllArticleList(@RequestBody ArticleFilterDTO articleFilterDTO, @Param("pageCurrent") int pageCurrent){
         PageResult<ArticleDTO> pageResult = articleService.getAllArticleList(articleFilterDTO,pageCurrent);
         return new JsonResult(pageResult);

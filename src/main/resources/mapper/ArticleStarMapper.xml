@@ -42,7 +42,7 @@
   </insert>
   <delete id="delRecord" parameterType="java.lang.String">
     delete from article_star
-    where articleId = #{articleId,jdbcType=CHAR}
+    where articleId = #{articleId,jdbcType=CHAR} and  userId = #{userId}
   </delete>
   <select id="getStarNumByArticleId" resultType="java.lang.Integer">
       select count(articleId) from article_star where articleId = #{articleId}

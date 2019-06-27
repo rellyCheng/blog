@@ -24,5 +24,5 @@ public interface ArticleStarMapper {
 
     int getStarNumByArticleIdAndUserId(@Param("articleId")String articleId, @Param("userId")String userId);
 
-    void delRecord(@Param("articleId") String articleId);
+    void delRecord(@Param("articleId") String articleId,@Param("userId") String userId);
 }

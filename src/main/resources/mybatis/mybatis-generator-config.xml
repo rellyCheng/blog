@@ -14,8 +14,6 @@
         <!-- 格式化XML代码 -->
         <property name="xmlFormatter" value="org.mybatis.generator.api.dom.DefaultXmlFormatter"/>
 
-        <!-- 带上序列化接口 -->
-        <plugin type="org.mybatis.generator.plugins.SerializablePlugin"/>
 
         <commentGenerator>
             <property name="suppressDate" value="true"/>
