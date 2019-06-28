@@ -105,4 +105,11 @@ public class UserController {
     }
 
 
+    @PostMapping("getLoginUserId")
+    public void getLoginUserId(Long loginUserId,@RequestBody UserEntity userEntity){
+        System.out.println(loginUserId);
+        System.out.println(userEntity.toString());
+    }
+
+
 }

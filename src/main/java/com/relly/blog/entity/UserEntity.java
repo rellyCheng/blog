@@ -45,6 +45,8 @@ public class UserEntity extends CommonBaseEntity implements Serializable {
 
     private String bgColor;
 
+    private String loginUserId;
+
 
     private static final long serialVersionUID = 1L;
 

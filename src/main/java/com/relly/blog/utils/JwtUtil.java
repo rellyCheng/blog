@@ -127,13 +127,17 @@ public class JwtUtil {
      */
     public static UserEntity getUser(HttpServletRequest request){
         String authorization = request.getHeader("Authorization");
-        authorization = authorization.substring(7, authorization.length());
-        DecodedJWT jwt = JWT.decode(authorization);
-        String username = jwt.getClaim("username").asString();
-        String id = jwt.getClaim("id").asString();
         UserEntity sysUser = new UserEntity();
-        sysUser.setUserName(username);
-        sysUser.setId(id);
+        if (authorization!=null){
+            authorization = authorization.substring(7, authorization.length());
+            DecodedJWT jwt = JWT.decode(authorization);
+            String username = jwt.getClaim("username").asString();
+            String id = jwt.getClaim("id").asString();
+            sysUser.setUserName(username);
+            sysUser.setId(id);
+        }else {
+            sysUser = null;
+        }
         return sysUser;
     }
 
