@@ -1,6 +1,6 @@
 package com.relly.blog.service.impl;
 
-import com.relly.blog.common.config.MessageEventHandler;
+//import com.relly.blog.common.config.MessageEventHandler;
 import com.relly.blog.common.exception.ServiceException;
 import com.relly.blog.common.model.PageResult;
 import com.relly.blog.dto.*;
@@ -197,7 +197,7 @@ public class ArticleServiceImpl implements ArticleService {
         noticeContentMap.put("noticeContent",articleMessageDTO.getContent());
         List<String> list = new ArrayList<>();
         list.add(articleMessageDTO.getAite());
-        MessageEventHandler.sendBuyLogEvent(noticeContentMap,list);
+//        MessageEventHandler.sendBuyLogEvent(noticeContentMap,list);
     }
 
     @Override

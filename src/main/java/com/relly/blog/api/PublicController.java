@@ -72,7 +72,7 @@ public class PublicController {
      * @param title
      * @return
      */
-    @PostMapping("article/getArticleByTitle")
+    @RequestMapping("article/getArticleByTitle")
     public JsonResult getArticleByTitle(@RequestParam("title") String title){
         PageResult<ArticleDTO> pageResult = articleService.getArticleByTitle(title);
         return new JsonResult(pageResult);

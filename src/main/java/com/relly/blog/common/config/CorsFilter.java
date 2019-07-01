@@ -34,66 +34,71 @@ public class CorsFilter implements Filter {
         response.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE");
         response.setHeader("Access-Control-Max-Age", "3600");
         response.setHeader("Access-Control-Allow-Headers", request.getHeader("Access-Control-Request-Headers"));
-        UserEntity userEntity = JwtUtil.getUser(request);
-        HttpServletRequestWrapper requestWrapper = null;
-        if(userEntity!=null){
-            requestWrapper = new HttpServletRequestWrapper(request) {
-                @Override
-                public String[] getParameterValues(String name) {
-                    if (name.equals("loginUserId")) {
-                        return new String[] { userEntity.getId() };
+        HttpServletRequest httpServletRequest = (HttpServletRequest) request;
+        String token = httpServletRequest.getHeader("Authorization");
+        HttpServletRequestWrapper requestWrapper = new HttpServletRequestWrapper(request);
+        if(token!=null&&token.equals("null")){
+            UserEntity userEntity = JwtUtil.getUser(request);
+            if(userEntity!=null){
+                requestWrapper = new HttpServletRequestWrapper(request) {
+                    @Override
+                    public String[] getParameterValues(String name) {
+                        if (name.equals("loginUserId")) {
+                            return new String[] { userEntity.getId() };
+                        }
+                        return super.getParameterValues(name);
                     }
-                    return super.getParameterValues(name);
-                }
-                @Override
-                public Enumeration<String> getParameterNames() {
-                    Set<String> paramNames = new LinkedHashSet<>();
-                    paramNames.add("loginUserId");
-                    Enumeration<String> names =  super.getParameterNames();
-                    while(names.hasMoreElements()) {
-                        paramNames.add(names.nextElement());
+                    @Override
+                    public Enumeration<String> getParameterNames() {
+                        Set<String> paramNames = new LinkedHashSet<>();
+                        paramNames.add("loginUserId");
+                        Enumeration<String> names =  super.getParameterNames();
+                        while(names.hasMoreElements()) {
+                            paramNames.add(names.nextElement());
+                        }
+                        return Collections.enumeration(paramNames);
                     }
-                    return Collections.enumeration(paramNames);
-                }
 
-                @Override
-                public ServletInputStream getInputStream() throws IOException {
-                    byte[] requestBody = new byte[0];
-                    try {
-                        requestBody = StreamUtils.copyToByteArray(request.getInputStream());
-                        Map map = JsonUtils.toMap(new String(requestBody));
-                        map.put("loginUserId", userEntity.getId());
-                        requestBody = JsonUtils.toJson(map).getBytes();
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    } catch (Exception e) {
-                        e.printStackTrace();
+                    @Override
+                    public ServletInputStream getInputStream() throws IOException {
+                        byte[] requestBody = new byte[0];
+                        try {
+                            requestBody = StreamUtils.copyToByteArray(request.getInputStream());
+                            Map map = JsonUtils.toMap(new String(requestBody));
+                            map.put("loginUserId", userEntity.getId());
+                            requestBody = JsonUtils.toJson(map).getBytes();
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        final ByteArrayInputStream bais = new ByteArrayInputStream(requestBody);
+                        return new ServletInputStream() {
+                            @Override
+                            public int read() throws IOException {
+                                return bais.read();
+                            }
+
+                            @Override
+                            public boolean isFinished() {
+                                return false;
+                            }
+
+                            @Override
+                            public boolean isReady() {
+                                return true;
+                            }
+
+                            @Override
+                            public void setReadListener(ReadListener listener) {
+
+                            }
+                        };
                     }
-                    final ByteArrayInputStream bais = new ByteArrayInputStream(requestBody);
-                    return new ServletInputStream() {
-                        @Override
-                        public int read() throws IOException {
-                            return bais.read();
-                        }
-
-                        @Override
-                        public boolean isFinished() {
-                            return false;
-                        }
-
-                        @Override
-                        public boolean isReady() {
-                            return true;
-                        }
-
-                        @Override
-                        public void setReadListener(ReadListener listener) {
-
-                        }
-                    };
-                }
-            };
+                };
+            }
         }
+
         chain.doFilter(requestWrapper, res);
     }
 
