@@ -47,6 +47,8 @@ public class UserEntity extends CommonBaseEntity implements Serializable {
 
     private String loginUserId;
 
+    private String openid;
+
 
     private static final long serialVersionUID = 1L;
 

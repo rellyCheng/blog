@@ -72,4 +72,6 @@ public interface UserMapper {
     List<String> getUserListByRole(@Param("roleId")String roleId);
 
     UserEntity getUserByVerify(String verify);
+
+    UserEntity getUserByOpenId(String openid);
 }

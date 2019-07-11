@@ -71,6 +71,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public UserEntity getUserByOpenId(String openid) {
+        UserEntity userEntity = userMapper.getUserByOpenId(openid);
+        return userEntity;
+    }
+
+    @Override
     public void addUser(UserEntity currentUser,UserDTO userDTO) {
         Map<String,String> map = MD5salt.md5salt(userDTO.getUserName(),userDTO.getPassword());
         UserEntity userEntity = UserEntity.builder()

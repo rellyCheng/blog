@@ -17,6 +17,8 @@ public interface UserService {
 
     UserEntity getUserByUserName(String userName);
 
+    UserEntity getUserByOpenId(String openid);
+
     void addUser(UserEntity currentUser,UserDTO userDTO);
 
     PageResult<UserDTO> getUserList(int pageSize, int pageCurrent);
