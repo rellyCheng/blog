@@ -128,7 +128,7 @@ public class JwtUtil {
     public static UserEntity getUser(HttpServletRequest request){
         String authorization = request.getHeader("Authorization");
         UserEntity sysUser = new UserEntity();
-        if (authorization!=null){
+        if (authorization!=null && authorization.indexOf("undefined")==-1 && authorization.indexOf("null")==-1){
             authorization = authorization.substring(7, authorization.length());
             DecodedJWT jwt = JWT.decode(authorization);
             String username = jwt.getClaim("username").asString();

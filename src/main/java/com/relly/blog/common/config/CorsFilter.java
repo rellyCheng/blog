@@ -37,7 +37,7 @@ public class CorsFilter implements Filter {
         HttpServletRequest httpServletRequest = (HttpServletRequest) request;
         String token = httpServletRequest.getHeader("Authorization");
         HttpServletRequestWrapper requestWrapper = new HttpServletRequestWrapper(request);
-        if(token!=null&&token.equals("null")){
+        if(token!=null&&!token.equals("null")){
             UserEntity userEntity = JwtUtil.getUser(request);
             if(userEntity!=null){
                 requestWrapper = new HttpServletRequestWrapper(request) {

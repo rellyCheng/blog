@@ -1,9 +1,11 @@
 package com.relly.blog.common.config;
 
+import com.relly.blog.common.exception.ServiceException;
 import com.relly.blog.common.model.JsonResult;
 import com.relly.blog.entity.UserEntity;
 import com.relly.blog.service.UserService;
 import com.relly.blog.utils.JwtUtil;
+import org.apache.shiro.ShiroException;
 import org.apache.shiro.web.filter.authc.BasicHttpAuthenticationFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,12 +60,8 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
      */
     protected boolean checkToken(String token, ServletResponse resp, ServletRequest request ) {
 
-
-        UserEntity user = null;
-        try {
-            user = JwtUtil.getUser((HttpServletRequest)request);
-        } catch (Exception e) {
-            e.printStackTrace();
+        UserEntity user = JwtUtil.getUser((HttpServletRequest)request);
+        if (user==null){
             response401(resp) ;
             return false;
         }
@@ -71,7 +69,7 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
         Boolean bl = JwtUtil.verify(token,user.getUserName(),user.getId(),user.getVerify());
         if(!bl){
             response401(resp) ;
-            return bl;
+            return false;
         }
 
         return true;
@@ -82,7 +80,7 @@ public class JWTFilter extends BasicHttpAuthenticationFilter {
      */
     private JsonResult response401( ServletResponse resp) {
         HttpServletResponse response = (HttpServletResponse) resp;
-        response.setStatus(401);
+        response.setStatus(403);
         return new JsonResult("登录失效");
     }
 }
