@@ -7,6 +7,7 @@ import com.relly.blog.dto.UserDTO;
 import com.relly.blog.dto.UserDetailDTO;
 import com.relly.blog.dto.UserRegisterDTO;
 import com.relly.blog.entity.UserEntity;
+import com.relly.blog.entity.WxUserEntity;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -40,4 +41,6 @@ public interface UserService {
     void activation(String verify);
 
     Map<String, Object> githubUser(String code) throws IOException;
+
+    void insertWxUser(WxUserEntity wxUserEntity);
 }

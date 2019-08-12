@@ -4,6 +4,8 @@ import com.relly.blog.common.exception.ServiceException;
 import com.relly.blog.common.model.JsonResult;
 import com.relly.blog.dto.UserRegisterDTO;
 import com.relly.blog.entity.UserEntity;
+import com.relly.blog.entity.WxUserEntity;
+import com.relly.blog.mapper.WxUserMapper;
 import com.relly.blog.service.PermissionService;
 import com.relly.blog.service.UserService;
 import com.relly.blog.utils.HttpUtil;
@@ -51,6 +53,8 @@ public class LoginController {
 
     @Resource
     private PermissionService permissionService;
+
+
 
     @Value("${webAddress}")
     private String webAddress;
@@ -200,7 +204,7 @@ public class LoginController {
     public JsonResult githubUser(@NotNull String code, HttpServletResponse response){
         try {
             Map<String,Object> map = userService.githubUser(code);
-            if(map.get("isNew")=="0"){
+            if(map.get("isNew").equals("0")){
                 response.sendRedirect(webAddress+"/result/registerSuccess?userName="+map.get("userName")+"&name="+map.get("name"));
             }else {
                 response.sendRedirect(webAddress+"/index?token="+map.get("token")+"&auth="+map.get("currentAuthority"));
@@ -244,4 +248,6 @@ public class LoginController {
         
         throw  new ServiceException("发送失败");
     }
+
+
 }

@@ -9,10 +9,8 @@ import com.relly.blog.dto.UserDetailDTO;
 import com.relly.blog.dto.UserRegisterDTO;
 import com.relly.blog.entity.UserDetailEntity;
 import com.relly.blog.entity.UserEntity;
-import com.relly.blog.mapper.NoticeMapper;
-import com.relly.blog.mapper.PermissionMapper;
-import com.relly.blog.mapper.UserDetailMapper;
-import com.relly.blog.mapper.UserMapper;
+import com.relly.blog.entity.WxUserEntity;
+import com.relly.blog.mapper.*;
 import com.relly.blog.service.UserService;
 import com.relly.blog.utils.ConvertUtils;
 import com.relly.blog.utils.IdUtil;
@@ -62,7 +60,8 @@ public class UserServiceImpl implements UserService {
     @Value("${apiAddress}")
     private String apiAddress;
 
-
+    @Resource
+    private WxUserMapper wxUserMapper;
 
     @Override
     public UserEntity getUserByUserName(String userName) {
@@ -276,6 +275,23 @@ public class UserServiceImpl implements UserService {
         } catch (IOException e) {
             e.printStackTrace();
             throw new ServiceException();
+        }
+    }
+
+    @Override
+    @Transactional
+    public void insertWxUser(WxUserEntity wxUserEntity) {
+
+        try {
+            wxUserMapper.insert(wxUserEntity);
+        } catch (Exception e) {
+            throw new ServiceException("注册失败");
+        }
+
+        if (wxUserEntity.getLoginUserId()!=null){
+            UserEntity userEntity = userMapper.selectByPrimaryKey(wxUserEntity.getLoginUserId());
+            userEntity.setOpenid(wxUserEntity.getOpenid());
+            userMapper.updateByPrimaryKeySelective(userEntity);
         }
     }
 

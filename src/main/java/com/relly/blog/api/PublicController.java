@@ -9,7 +9,9 @@ import com.relly.blog.dto.ArticleDTO;
 import com.relly.blog.dto.ArticleFilterDTO;
 import com.relly.blog.dto.ArticleMessageDTO;
 import com.relly.blog.entity.UserEntity;
+import com.relly.blog.entity.WxUserEntity;
 import com.relly.blog.mapper.UserMapper;
+import com.relly.blog.mapper.WxUserMapper;
 import com.relly.blog.service.ArticleService;
 import com.relly.blog.service.PermissionService;
 import com.relly.blog.service.UserService;
@@ -48,6 +50,7 @@ public class PublicController {
     private UserMapper userMapper;
     @Resource
     private PermissionService permissionService;
+
     /**
      * 获取全部的文章
      * @author Relly
@@ -133,13 +136,14 @@ public class PublicController {
         String openid = jsonObj.getString("openid");
         UserEntity userEntity = userService.getUserByOpenId(openid);
         if (userEntity==null){
-            throw new ServiceException("当前用户还未注册");
+            throw new ServiceException(openid);
         }
         String token = JwtUtil.sign(userEntity.getUserName(),userEntity.getId(),userEntity.getVerify());
         Map<String,Object> map = new HashMap<>(3);
         map.put("token",token);
         map.put("userId",userEntity.getId());
         map.put("name",userEntity.getName());
+        map.put("openid",openid);
         List<String> authList = permissionService.getPermissionListByUserId(userEntity.getId());
         authList.add("currentUser");
         map.put("currentAuthority",authList);
@@ -164,6 +168,10 @@ public class PublicController {
         userMapper.updateByPrimaryKeySelective(userEntity);
         return new JsonResult();
     }
-
+    @PostMapping("wxRegist")
+    public JsonResult wxRegist(@RequestBody WxUserEntity wxUserEntity){
+        userService.insertWxUser(wxUserEntity);
+        return new JsonResult();
+    }
 
 }

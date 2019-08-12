@@ -4,6 +4,7 @@ import com.relly.blog.common.model.JsonResult;
 import com.relly.blog.entity.CityEntity;
 import com.relly.blog.entity.ProvinceEntity;
 import com.relly.blog.service.AreaService;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -28,6 +29,7 @@ public class AreaController {
 
     @PostMapping("province")
     @Cacheable(value="province-key")
+    @RequiresPermissions("aaa")
     public JsonResult getAllProvinceList(){
         List<ProvinceEntity> list = areaService.getAllProvinceList();
         return new JsonResult(list);
