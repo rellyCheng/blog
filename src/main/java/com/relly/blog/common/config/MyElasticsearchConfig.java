@@ -31,7 +31,7 @@ public class MyElasticsearchConfig {
         );
 
         Settings settings = Settings.builder()
-                .put("cluster.name","relly")
+                .put("cluster.name","docker-cluster")
                 .build();
         PreBuiltTransportClient client = new PreBuiltTransportClient(settings);
         client.addTransportAddress(node);
